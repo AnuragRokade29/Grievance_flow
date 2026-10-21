@@ -1,0 +1,276 @@
+/* ==========================================================================
+   NTIS Civic Grievance Redressal System - Amravati Municipal Corporation
+   Pure Vanilla CSS Design System & Global Styles
+   ========================================================================== */
+
+:root {
+  /* Municipal Navy & Civic Header Tones */
+  --bg-header: #4b70a6;
+  --bg-header-dark: #3b5b88;
+  --user-card-from: #243b7c;
+  --user-card-to: #0c1b48;
+
+  /* Accent Emerald (Civic Redressal & Action) */
+  --emerald-700: #047857;
+  --emerald-600: #059669;
+  --emerald-500: #10b981;
+  --emerald-400: #34d399;
+  --emerald-100: #d1fae5;
+  --emerald-50: #ecfdf5;
+
+  /* Neutral Surface Palette */
+  --bg-body: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-card-muted: #f1f5f9;
+  --border-color: #e2e8f0;
+  --border-color-dark: #cbd5e1;
+
+  /* Text Colors */
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  --text-white: #ffffff;
+
+  /* Status Colors */
+  --status-pending-bg: #fffbeb;
+  --status-pending-text: #b45309;
+  --status-pending-border: #fde68a;
+
+  --status-assigned-bg: #eff6ff;
+  --status-assigned-text: #1d4ed8;
+  --status-assigned-border: #bfdbfe;
+
+  --status-progress-bg: #f5f3ff;
+  --status-progress-text: #6d28d9;
+  --status-progress-border: #ddd6fe;
+
+  --status-resolved-bg: #ecfdf5;
+  --status-resolved-text: #047857;
+  --status-resolved-border: #a7f3d0;
+
+  --status-escalated-bg: #fef2f2;
+  --status-escalated-text: #b91c1c;
+  --status-escalated-border: #fecaca;
+
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Devanagari', 'Mukta', sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.06);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: 0.875rem;
+}
+
+/* ==========================================================================
+   Global Layout Containers
+   ========================================================================== */
+.app-layout {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 64px);
+  overflow: hidden;
+}
+
+.main-viewport {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: var(--bg-body);
+  position: relative;
+}
+
+/* ==========================================================================
+   Tactile 3D Circular Camera Shutter Button (Sidebar Top)
+   ========================================================================== */
+.snap-shutter-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 0 0.85rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 0.75rem;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.snap-shutter-wrapper:hover {
+  transform: translateY(-2px);
+}
+
+.concentric-shutter {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--emerald-50) 0%, var(--emerald-100) 100%);
+  border: 3px solid var(--emerald-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--emerald-600);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15), 0 8px 16px rgba(5, 150, 105, 0.2);
+  margin-bottom: 0.45rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.snap-shutter-wrapper:hover .concentric-shutter {
+  box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.25), 0 12px 20px rgba(5, 150, 105, 0.3);
+  transform: scale(1.05);
+}
+
+.concentric-shutter::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--emerald-400);
+  animation: rotate-shutter 12s linear infinite;
+}
+
+@keyframes rotate-shutter {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.shutter-icon {
+  width: 26px;
+  height: 26px;
+  z-index: 2;
+}
+
+.shutter-label {
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.shutter-sublabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--emerald-600);
+}
+
+/* ==========================================================================
+   Card Surfaces & Containers
+   ========================================================================== */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.card-header-bar {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-content {
+  padding: 1.25rem;
+}
+
+/* ==========================================================================
+   Buttons & Pills
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--emerald-600);
+  color: var(--text-white);
+  box-shadow: 0 1px 2px rgba(5, 150, 105, 0.2);
+}
+
+.btn-primary:hover {
+  background: var(--emerald-700);
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-card-muted);
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: var(--text-white);
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+.btn-pill {
+  border-radius: var(--radius-full);
+}
+
+.btn-sm {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .dashboard-sidebar {
+    width: 68px;
+    padding: 0.75rem 0.35rem;
+  }
+  .shutter-label, .shutter-sublabel, .nav-section-label, .nav-text-span, .nav-chevron-icon {
+    display: none;
+  }
+}

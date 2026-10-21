@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amravati Municipal Corporation • Public Grievance Redressal Department</title>
+  <meta name="description" content="Official Civic Grievance Redressal Portal for Amravati Municipal Corporation (AMC). File complaints, track status on live GIS map." />
+
+  <!-- Fonts with Marathi Devanagari support -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Mukta:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet GIS Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body>
+
+  <!-- Toast Notification Shelf -->
+  <div id="toast-shelf"></div>
+
+  <!-- ====================================================================
+       1. Top Header
+       ==================================================================== -->
+  <header class="amc-header">
+    <div class="amc-brand">
+      <div class="amc-logo-circle">AMC</div>
+      <div class="amc-titles">
+        <h1 data-i18n="portalTitle">Amravati Municipal Corporation</h1>
+        <p>
+          <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
+          <span data-i18n="portalSubtitle">Public Grievance Redressal Department</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="amc-header-actions">
+      <button type="button" id="header-home-btn" class="pill-btn pill-btn-home">
+        <span>🏠</span>
+        <span data-i18n="homeBtn">Home</span>
+      </button>
+
+      <button type="button" id="lang-toggle-btn" class="pill-btn pill-btn-lang">
+        <span>🌐</span>
+        <span id="lang-btn-text">English</span>
+      </button>
+
+      <a href="admin.html" class="pill-btn pill-btn-login" title="Switch to Municipal Officer Desk">
+        <span>👮</span>
+        <span>Officer Desk</span>
+      </a>
+
+      <!-- Logged in Citizen Profile Pill & Dropdown -->
+      <div class="user-profile-wrapper">
+        <div class="user-profile-badge" id="citizen-profile-badge" title="Citizen Account">
+          <div class="user-avatar-circle" id="citizen-avatar">👤</div>
+          <div style="text-align: left; line-height: 1.15;">
+            <div style="font-weight: 700; font-size: 0.775rem;" id="citizen-badge-name">Anurag</div>
+            <div style="font-size: 0.65rem; color: #10b981; font-weight: 600;" id="citizen-badge-status">Verified</div>
+          </div>
+          <span style="font-size: 0.7rem; color: #94a3b8;" id="citizen-badge-chevron">⌄</span>
+        </div>
+
+        <!-- Floating Dropdown Menu -->
+        <div class="profile-dropdown-menu" id="citizen-profile-dropdown">
+          <div class="profile-dropdown-header">
+            <div class="user-avatar-circle" id="citizen-drop-avatar" style="width: 36px; height: 36px; font-size: 0.95rem;">👤</div>
+            <div style="display: flex; flex-direction: column; gap: 0.15rem; overflow: hidden;">
+              <div style="font-weight: 800; font-size: 0.875rem; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="citizen-drop-name">Anurag</div>
+              <div style="font-size: 0.725rem; color: #64748b;" id="citizen-drop-phone">+91 8459741554</div>
+              <div style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.65rem; font-weight: 700; color: #059669;">
+                <span style="display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #10b981;"></span>
+                <span id="citizen-drop-badge">Verified Citizen • Ward 1</span>
+              </div>
+            </div>
+          </div>
+          <div class="profile-dropdown-body">
+            <button type="button" class="dropdown-item-btn" id="citizen-drop-tickets-btn">
+              <span>📋</span>
+              <span>My Grievance Tickets</span>
+            </button>
+            <button type="button" class="dropdown-item-btn" id="citizen-drop-report-btn">
+              <span>📷</span>
+              <span>Report New Grievance</span>
+            </button>
+            <button type="button" class="dropdown-item-btn danger" id="citizen-logout-btn">
+              <span>🚪</span>
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ====================================================================
+       2. Dashboard Layout (Sidebar + Main Content)
+       ==================================================================== -->
+  <div class="dashboard-layout">
+    
+    <!-- Left Sidebar -->
+    <aside class="dashboard-sidebar">
+      
+      <!-- Snap & Report Action Button (Opens 3-Step Wizard) -->
+      <div id="sidebar-snap-report-btn" class="snap-report-card">
+        <div class="camera-circle-btn">
+          <span>📷</span>
+        </div>
+        <div class="snap-title" data-i18n="snapTitle">Snap & Report</div>
+        <div class="snap-subtitle" data-i18n="snapSubtitle">Report Grievance</div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <div class="sidebar-nav-section">
+        <span class="nav-section-label" data-i18n="navLabel">NAVIGATION</span>
+        
+        <div id="nav-btn-dashboard" class="nav-item">
+          <div class="nav-item-left">
+            <span>📊</span>
+            <span data-i18n="navDashboard">Dashboard (Overview)</span>
+          </div>
+          <span>›</span>
+        </div>
+
+        <div id="nav-btn-tracker" class="nav-item active">
+          <div class="nav-item-left">
+            <span>📈</span>
+            <span data-i18n="navTracker">Live Tracker (Status)</span>
+          </div>
+          <span id="nav-tracker-badge" class="nav-badge">30</span>
+        </div>
+      </div>
+
+      <!-- Reset Demo Shortcut -->
+      <div style="margin-top: auto; padding: 0.5rem 0;">
+        <button type="button" id="sidebar-reset-demo-btn" class="pill-btn" style="width: 100%; justify-content: center; font-size: 0.75rem; color: #b91c1c;">
+          ↺ Reset Demo
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="view-container" style="padding: 0; background: #f8fafc; flex: 1; overflow: hidden; display: flex; flex-direction: column;">
+
+      <!-- ==============================================================
+           VIEW 1: DASHBOARD (OVERVIEW) - GIS MAP & CAROUSEL (SCREENSHOT 1)
+           ============================================================== -->
+      <div id="view-dashboard" style="display: none; flex-direction: column; flex: 1; height: 100%; gap: 0.75rem; padding: 0.85rem 1.25rem; overflow: hidden;">
+        
+        <!-- Top 4 KPI Summary Cards -->
+        <div class="kpi-row">
+          <div class="kpi-summary-card kpi-border-blue">
+            <div>
+              <div class="kpi-label" data-i18n="kpiTotal">TOTAL COMPLAINTS</div>
+              <div id="kpi-disp-total" class="kpi-number kpi-num-blue">193</div>
+              <div class="kpi-subtext">All logged issues</div>
+            </div>
+            <div class="kpi-icon-square kpi-icon-blue">📄</div>
+          </div>
+
+          <div class="kpi-summary-card kpi-border-orange">
+            <div>
+              <div class="kpi-label" data-i18n="kpiPending">PENDING</div>
+              <div id="kpi-disp-pending" class="kpi-number kpi-num-orange">193</div>
+              <div class="kpi-subtext">Awaiting action</div>
+            </div>
+            <div class="kpi-icon-square kpi-icon-orange">⏰</div>
+          </div>
+
+          <div class="kpi-summary-card kpi-border-purple">
+            <div>
+              <div class="kpi-label" data-i18n="kpiProgress">IN PROGRESS</div>
+              <div id="kpi-disp-progress" class="kpi-number kpi-num-purple">0</div>
+              <div class="kpi-subtext">Under resolution</div>
+            </div>
+            <div class="kpi-icon-square kpi-icon-purple">⚡</div>
+          </div>
+
+          <div class="kpi-summary-card kpi-border-green">
+            <div>
+              <div class="kpi-label" data-i18n="kpiResolved">RESOLVED</div>
+              <div id="kpi-disp-resolved" class="kpi-number kpi-num-green">0</div>
+              <div class="kpi-subtext">Closed & verified</div>
+            </div>
+            <div class="kpi-icon-square kpi-icon-green">✓</div>
+          </div>
+        </div>
+
+        <!-- Map Viewport Canvas with Overlays -->
+        <div class="map-canvas-container">
+          <div id="amravati-map"></div>
+
+          <div class="map-top-overlay">
+            <div class="map-filters-left">
+              <select id="map-ward-select" class="ward-filter-select">
+                <option value="">● All Wards</option>
+              </select>
+              <button type="button" class="filter-pill active" data-filter="all">All</button>
+              <button type="button" class="filter-pill" data-filter="dirty"><span class="dot-red"></span> Dirty</button>
+              <button type="button" class="filter-pill" data-filter="cleaned"><span class="dot-green"></span> Cleaned</button>
+            </div>
+            <div>
+              <button type="button" id="map-report-btn" class="btn-report-grievance">
+                <span>+</span>
+                <span data-i18n="reportGrievanceBtn">Report Grievance</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="map-bottom-cards" class="map-bottom-cards-wrapper"></div>
+        </div>
+
+      </div>
+
+      <!-- ==============================================================
+           VIEW 2: LIVE TRACKER (STATUS) - EXACT MATCHING SCREENSHOT 3
+           ============================================================== -->
+      <div id="view-tracker" style="display: flex; height: 100%; width: 100%;">
+        
+        <div class="track-page-container">
+          
+          <!-- Left Column: My Tickets (30) -->
+          <div class="track-tickets-sidebar">
+            
+            <div class="tickets-header-row">
+              <h3 id="my-tickets-title">My Tickets (30)</h3>
+              <button type="button" id="tickets-new-btn" class="btn-new-ticket">+ New</button>
+            </div>
+
+            <div style="position: relative;">
+              <span style="position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;">🔍</span>
+              <input type="text" id="tickets-search-input" class="tickets-search-input" placeholder="Search by token, department..." />
+            </div>
+
+            <div class="tickets-pills-row">
+              <button type="button" class="ticket-tab-pill active" data-tab="all">All (30)</button>
+              <button type="button" class="ticket-tab-pill" data-tab="pending">Pending (30)</button>
+              <button type="button" class="ticket-tab-pill" data-tab="resolved">Resolved (0)</button>
+            </div>
+
+            <div id="tickets-scroll-container" class="tickets-scroll-list">
+              <!-- Dynamically populated ticket rows with amber stripe -->
+            </div>
+
+          </div>
+
+          <!-- Right Area: Selected Ticket Detail & Two-Column Stepper -->
+          <div class="track-ticket-detail-pane">
+            
+            <!-- Top Bar: Title & Action Buttons -->
+            <div class="ticket-detail-top-bar">
+              <div class="ticket-title-group">
+                <h2 id="detail-ticket-title">Potholes</h2>
+                <div class="meta-line">
+                  <strong id="detail-ticket-token">#GRV-2026-000175</strong>
+                  <span>•</span>
+                  <span id="detail-ticket-dept">Road Maintenance Department</span>
+                  <span>•</span>
+                  <span id="detail-ticket-location">Camp Main Road</span>
+                  <span>•</span>
+                  <span id="detail-ticket-date">17 Oct 2026, 02:33 pm</span>
+                </div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span class="status-tag-pending">● PENDING</span>
+                
+                <div class="ticket-action-btns">
+                  <button type="button" id="btn-edit-grievance" class="btn-edit-grv">
+                    <span>✏️</span>
+                    <span>Edit Grievance</span>
+                  </button>
+
+                  <button type="button" id="btn-delete-grievance" class="btn-delete-grv">
+                    <span>🗑️</span>
+                    <span>Delete Grievance</span>
+                  </button>
+
+                  <button type="button" id="btn-share-grievance" class="btn-share-grv">
+                    <span>🔗</span>
+                    <span>Share</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sub tabs: Live Timeline / Officers & Squad -->
+            <div class="ticket-sub-tabs">
+              <div class="sub-tab-item active">
+                <span>✓</span>
+                <span>Live Timeline</span>
+              </div>
+              <div class="sub-tab-item">
+                <span>👥</span>
+                <span>Officers & Squad</span>
+              </div>
+            </div>
+
+            <!-- Detail Main Card -->
+            <div class="ticket-timeline-card">
+              
+              <!-- Before & After Section -->
+              <div class="before-after-box">
+                <div class="ba-left-thumb">
+                  <span style="font-size: 0.8125rem; font-weight: 700; color: #475569;">📷 Before & After</span>
+                  <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
+                    <span style="font-size: 0.7rem; font-weight: 800; color: #dc2626;">BEFORE:</span>
+                    <img id="detail-before-img" src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=500" alt="Before repair" />
+                  </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 1.25rem;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 0.7rem; font-weight: 800; color: #64748b;">STATUS:</span>
+                    <div class="ba-status-tag">
+                      <span style="color: #f59e0b;">⏰</span>
+                      <div>
+                        <div style="font-weight: 700; font-size: 0.75rem;">Pending Fix</div>
+                        <div style="font-size: 0.65rem; color: #94a3b8;">Work in progress on site</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <a href="#" class="ba-inspect-link">Inspect Evidence →</a>
+                </div>
+              </div>
+
+              <!-- Two-Column Flow (Citizen vs Officer) -->
+              <div class="timeline-two-column-flow">
+                
+                <div class="timeline-flow-header-roles">
+                  <span>👤 Citizen</span>
+                  <span>👮 Officer</span>
+                </div>
+
+                <div class="flow-grid-container">
+                  
+                  <!-- Citizen Side Step 1 -->
+                  <div class="flow-citizen-card">
+                    <span style="font-size: 1.5rem; color: #00875a;">📄</span>
+                    <div>
+                      <div style="font-weight: 800; font-size: 0.875rem; color: #0f172a;">Pending</div>
+                      <div style="font-size: 0.75rem; color: #64748b;" id="flow-card-defect">Potholes</div>
+                      <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.2rem;" id="flow-card-date">17 Oct 2026, 02:33 pm</div>
+                    </div>
+                  </div>
+
+                  <!-- Central Connector Node -->
+                  <div class="flow-node-center">✓</div>
+
+                  <!-- Officer Side Steps 2, 3, 4 -->
+                  <div class="flow-officer-steps">
+                    
+                    <div class="officer-step-item">
+                      <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <span style="font-size: 1rem; color: #2563eb;">👤</span>
+                        <h5>Assigned</h5>
+                      </div>
+                      <p>We will assign an officer soon.</p>
+                    </div>
+
+                    <div class="officer-step-item">
+                      <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <span style="font-size: 1rem; color: #f59e0b;">🔧</span>
+                        <h5>Under Review</h5>
+                      </div>
+                      <p>A large and deep pothole has formed on the road surface, which is filled with stagnant water and poses safety risks...</p>
+                    </div>
+
+                    <div class="officer-step-item" style="border-style: dashed; opacity: 0.75;">
+                      <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 0.4rem;">
+                          <span style="font-size: 1rem; color: #94a3b8;">⭕</span>
+                          <h5>Resolved</h5>
+                        </div>
+                        <span style="font-size: 0.65rem; background: #e2e8f0; color: #475569; padding: 0.1rem 0.4rem; border-radius: 4px;">Upcoming</span>
+                      </div>
+                      <p>Expected after on-site repair is completed and photo verification is filed.</p>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ====================================================================
+       3. Three-Step Report Grievance Wizard Modal (Images 3, 4, 5)
+       ==================================================================== -->
+  <div id="report-modal" class="slideover-backdrop">
+    <div class="admin-login-card" style="margin: auto; max-width: 540px; background: #ffffff;">
+      
+      <!-- Wizard Top Header with Stepper Nodes -->
+      <div class="wizard-stepper-header">
+        <div class="wizard-step-indicator active" id="wizard-ind-1">
+          <div class="step-node-badge">1</div>
+          <div class="step-node-label">Evidence</div>
+        </div>
+        <div class="wizard-step-line" id="wizard-line-1"></div>
+
+        <div class="wizard-step-indicator" id="wizard-ind-2">
+          <div class="step-node-badge">2</div>
+          <div class="step-node-label">Details</div>
+        </div>
+        <div class="wizard-step-line" id="wizard-line-2"></div>
+
+        <div class="wizard-step-indicator" id="wizard-ind-3">
+          <div class="step-node-badge">3</div>
+          <div class="step-node-label">Citizen</div>
+        </div>
+
+        <button type="button" id="wizard-close-btn" class="pill-btn" style="padding: 0.2rem 0.5rem; margin-left: 1rem;">✕</button>
+      </div>
+
+      <!-- STEP 1: EVIDENCE PHOTOS (OPTIONAL) -->
+      <div id="wizard-step-1" style="display: flex; flex-direction: column;">
+        <div class="wizard-dropzone-box" id="wizard-dropzone">
+          <div class="dropzone-camera-icon">📷</div>
+          <h4 style="font-size: 0.95rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;">
+            Evidence Photos (Optional)
+          </h4>
+          <p style="font-size: 0.775rem; color: #64748b;">
+            Take a photo or upload evidence for faster municipal resolution
+          </p>
+          <input type="file" id="wizard-photo-input" accept="image/*" style="display: none;" />
+          <button type="button" id="wizard-upload-btn" class="btn-wizard-action">
+            <span>📷</span>
+            <span>Take Photo or Upload</span>
+          </button>
+          <div id="wizard-photo-preview" style="display: none; margin-top: 0.75rem;">
+            <img id="wizard-preview-img" src="" style="width: 120px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1;" alt="Preview" />
+          </div>
+        </div>
+
+        <div class="wizard-footer-nav">
+          <span style="font-size: 0.75rem; color: #94a3b8;">Max 5MB • JPG, PNG</span>
+          <button type="button" id="wizard-to-step2-btn" class="pill-btn" style="background: #00875a; color: #ffffff; border-color: #00875a; font-weight: 700;">
+            Next: Details →
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: GRIEVANCE DETAILS -->
+      <div id="wizard-step-2" style="display: none; flex-direction: column;">
+        <div class="wizard-form-body">
+          
+          <div class="wizard-field-group">
+            <label class="wizard-field-label">Department <span>*</span></label>
+            <select id="wiz-dept-select" class="wizard-select" required>
+              <option value="Road Maintenance Department">Road Maintenance Department</option>
+              <option value="Sewerage & Drainage Department">Sewerage & Drainage Department</option>
+              <option value="Street Lighting Department">Street Lighting Department</option>
+              <option value="Traffic Engineering Department">Traffic Engineering Department</option>
+              <option value="Solid Waste Management Department">Solid Waste Management Department</option>
+              <option value="Water Supply Department">Water Supply Department</option>
+            </select>
+          </div>
+
+          <div class="wizard-field-group">
+            <label class="wizard-field-label">Defect Type <span>*</span></label>
+            <select id="wiz-defect-select" class="wizard-select" required>
+              <option value="Potholes">Potholes</option>
+              <option value="Broken manhole">Broken manhole</option>
+              <option value="Surface damage">Surface damage</option>
+              <option value="Light not working">Light not working</option>
+              <option value="Sewer blockage">Sewer blockage</option>
+              <option value="Waste burning">Waste burning</option>
+            </select>
+          </div>
+
+          <div class="wizard-field-group">
+            <div class="wizard-field-header-row">
+              <label class="wizard-field-label">Road Name / Landmark <span>*</span></label>
+              <button type="button" id="wiz-locate-me-btn" class="btn-label-action">📍 Locate Me</button>
+            </div>
+            <input type="text" id="wiz-landmark-input" class="wizard-input" value="Camp Main Road, Amravati" placeholder="e.g. Near Bus Stand, Camp Main Road" required />
+          </div>
+
+          <div class="wizard-field-group">
+            <div class="wizard-field-header-row">
+              <label class="wizard-field-label">Grievance Description <span>*</span></label>
+              <button type="button" id="wiz-voice-btn" class="btn-label-action">🎤 Voice</button>
+            </div>
+            <textarea id="wiz-desc-input" class="wizard-textarea" placeholder="Provide accurate details..." required>A large pothole has formed on the road surface, which is filled with stagnant water and poses safety risks for two-wheelers.</textarea>
+            <div style="text-align: right; font-size: 0.65rem; color: #94a3b8;" id="wiz-char-counter">142 / 1000</div>
+          </div>
+
+        </div>
+
+        <div class="wizard-footer-nav">
+          <button type="button" id="wizard-back-to-step1" class="pill-btn">← Back</button>
+          <button type="button" id="wizard-to-step3-btn" class="pill-btn" style="background: #00875a; color: #ffffff; border-color: #00875a; font-weight: 700;">
+            Next: Review →
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3: CITIZEN INFORMATION & SUBMIT -->
+      <div id="wizard-step-3" style="display: none; flex-direction: column;">
+        <div class="wizard-form-body">
+          
+          <div class="wizard-summary-banner">
+            <div style="font-weight: 800; color: #00875a;" id="wiz-summary-dept">Road Maintenance Department</div>
+            <div style="font-size: 0.775rem; color: #0f172a;" id="wiz-summary-defect">Defect: Potholes</div>
+            <div style="font-size: 0.725rem; color: #64748b;" id="wiz-summary-loc">📍 Camp Main Road, Amravati</div>
+          </div>
+
+          <div class="wizard-field-group">
+            <label class="wizard-field-label">Citizen Name <span>*</span></label>
+            <input type="text" id="wiz-citizen-name" class="wizard-input" value="Anurag" required />
+          </div>
+
+          <div class="wizard-field-group">
+            <label class="wizard-field-label">Mobile Number <span>*</span></label>
+            <input type="tel" id="wiz-citizen-phone" class="wizard-input" value="8459741554" maxlength="10" required />
+          </div>
+
+          <div style="font-size: 0.725rem; color: #64748b; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.65rem;">
+            🔒 By submitting, you agree to receive SMS redressal status notifications from Amravati Municipal Corporation.
+          </div>
+
+        </div>
+
+        <div class="wizard-footer-nav">
+          <button type="button" id="wizard-back-to-step2" class="pill-btn">← Back</button>
+          <button type="button" id="wizard-final-submit-btn" class="pill-btn" style="background: #00875a; color: #ffffff; border-color: #00875a; font-weight: 700;">
+            Submit Grievance ✓
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       Citizen Login & Verification Modal (Allows any user to register/login)
+       ==================================================================== -->
+  <div id="citizen-login-modal" class="slideover-backdrop">
+    <div class="admin-login-card" style="margin: auto; max-width: 440px;">
+      
+      <!-- Login Header -->
+      <div style="background: linear-gradient(135deg, #059669 0%, #047857 100%); padding: 1.5rem; color: #ffffff; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+            👤
+          </div>
+          <div>
+            <h3 style="font-size: 1.05rem; font-weight: 800; line-height: 1.2;">Citizen Sign In / Registration</h3>
+            <p style="font-size: 0.75rem; color: #a7f3d0;">Amravati Municipal Grievance Redressal</p>
+          </div>
+        </div>
+        <button type="button" id="citizen-login-modal-close" class="pill-btn" style="background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); color: #ffffff; padding: 0.2rem 0.5rem;">✕</button>
+      </div>
+
+      <form id="citizen-login-form" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+        
+        <!-- Quick Fill Helper Buttons -->
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button type="button" id="citizen-quickfill-anurag" class="pill-btn" style="font-size: 0.7rem; padding: 0.25rem 0.6rem; background: #ecfdf5; border-color: #a7f3d0; color: #047857; font-weight: 700;">
+            👤 Anurag (8459741554)
+          </button>
+          <button type="button" id="citizen-quickfill-pooja" class="pill-btn" style="font-size: 0.7rem; padding: 0.25rem 0.6rem; background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; font-weight: 700;">
+            ✨ New: Pooja Sharma
+          </button>
+          <button type="button" id="citizen-quickfill-clear" class="pill-btn" style="font-size: 0.7rem; padding: 0.25rem 0.6rem; color: #64748b;">
+            Clear
+          </button>
+        </div>
+
+        <div>
+          <label style="font-size: 0.75rem; font-weight: 700; color: #334155;">FULL NAME *</label>
+          <input type="text" id="citizen-login-input-name" class="wizard-input" style="margin-top: 0.35rem;" placeholder="e.g. Anurag, Pooja Sharma, Rahul Deshmukh" value="Anurag" required />
+        </div>
+
+        <div>
+          <label style="font-size: 0.75rem; font-weight: 700; color: #334155;">MOBILE NUMBER *</label>
+          <input type="tel" id="citizen-login-input-phone" class="wizard-input" style="margin-top: 0.35rem;" placeholder="10-digit mobile number" value="8459741554" maxlength="10" required />
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.35rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.725rem; font-weight: 700; color: #475569;">SIMULATED OTP *</span>
+            <span style="font-size: 0.7rem; color: #059669; font-weight: 700;">Demo Auto-Filled</span>
+          </div>
+          <input type="text" id="citizen-login-input-otp" class="wizard-input" value="123456" maxlength="6" style="text-align: center; letter-spacing: 0.3em; font-weight: 800; font-size: 1rem;" required />
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.65rem; margin-top: 0.5rem;">
+          <button type="button" id="citizen-login-modal-cancel" class="pill-btn">Cancel</button>
+          <button type="submit" class="pill-btn" style="background: #00875a; color: #ffffff; border-color: #00875a; font-weight: 700;">
+            Verify & Sign In →
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Leaflet GIS Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Citizen App Engine -->
+  <script type="module" src="js/citizen.js"></script>
+</body>
+</html>
