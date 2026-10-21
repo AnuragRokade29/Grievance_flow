@@ -128,6 +128,10 @@
             </div>
           </div>
           <div class="profile-dropdown-body">
+            <button type="button" class="dropdown-item-btn" onclick="window.switchAdminScreen('new-grievance')">
+              <span>➕</span>
+              <span>New Grievance (Compact Split)</span>
+            </button>
             <button type="button" class="dropdown-item-btn" onclick="window.switchAdminScreen('all-complaints')">
               <span>📋</span>
               <span>All Grievances Queue</span>
@@ -185,6 +189,15 @@
             <span data-i18n="allComplaints">All Complaints</span>
           </div>
           <span>›</span>
+        </div>
+
+        <!-- New Grievance (Option 1 • Compact Split Layout) -->
+        <div id="nav-btn-new-grievance" class="nav-item">
+          <div class="nav-item-left">
+            <span>➕</span>
+            <span>New Grievance</span>
+          </div>
+          <span style="font-size: 0.625rem; background: #ecfdf5; color: #047857; font-weight: 800; padding: 0.1rem 0.4rem; border-radius: 4px;">Figma</span>
         </div>
 
         <!-- Workbench Tab -->
@@ -976,6 +989,207 @@
         <!-- Show Appointments Content Viewport -->
         <div id="show-appts-content-container">
           <!-- Rendered dynamically via js/admin.js -->
+        </div>
+
+      </div>
+
+      <!-- ==============================================================
+           SCREEN 9: OPTION 1 • COMPACT SPLIT LAYOUT (NEW GRIEVANCE)
+           ============================================================== -->
+      <div id="screen-new-grievance" style="display: none; flex-direction: column; flex: 1; height: 100%; overflow-y: auto; padding: 1.75rem 2rem; gap: 1.25rem;">
+        
+        <!-- Header Info -->
+        <div style="display: flex; align-items: center; justify-content: space-between; max-width: 960px; margin: 0 auto; width: 100%;">
+          <div>
+            <h2 style="font-size: 1.2rem; font-weight: 800; color: #1e4d38; display: flex; align-items: center; gap: 0.5rem;">
+              <span>Option 1 • Compact split layout</span>
+            </h2>
+            <p style="font-size: 0.775rem; color: #64748b;">Direct intake & administrative field assignment</p>
+          </div>
+          <button type="button" class="pill-btn" onclick="window.switchAdminScreen('all-complaints')">
+            ← Back to Queue
+          </button>
+        </div>
+
+        <div class="compact-split-container">
+          <div class="split-layout-card">
+            
+            <!-- Dark Forest Green Top Banner (AMC | Commissioner) -->
+            <div class="split-header-banner">
+              <div class="split-brand-title">AMC | Commissioner</div>
+              <div class="split-user-pill" id="split-banner-user">
+                <div class="split-user-avatar">👤</div>
+                <span>Commissioner</span>
+                <span style="font-size: 0.7rem;">⌄</span>
+              </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="split-card-body">
+              <h1 style="font-size: 1.4rem; font-weight: 800; color: #0f172a; margin-bottom: 1.75rem;">New grievance</h1>
+
+              <form id="new-grievance-split-form">
+                <div class="split-grid-columns">
+                  
+                  <!-- Left Column: Issue details -->
+                  <div>
+                    <h3 class="split-col-title">Issue details</h3>
+
+                    <div style="margin-bottom: 1.25rem;">
+                      <label style="font-size: 0.8rem; font-weight: 600; color: #475569; display: block; margin-bottom: 0.45rem;">
+                        Photos <span style="font-weight: 400; color: #94a3b8;">(optional)</span>
+                      </label>
+                      
+                      <div class="split-photos-list" id="new-grv-photos-list">
+                        <!-- Photo 1 -->
+                        <div class="split-photo-thumb" data-photo-idx="0">
+                          <img src="https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500" alt="Garbage collection issue" />
+                          <button type="button" class="split-photo-delete" title="Remove photo">✕</button>
+                        </div>
+                        <!-- Photo 2 -->
+                        <div class="split-photo-thumb" data-photo-idx="1">
+                          <img src="https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=500" alt="Garbage container overflow" />
+                          <button type="button" class="split-photo-delete" title="Remove photo">✕</button>
+                        </div>
+                        <!-- Add Photo Box -->
+                        <div class="split-add-photo-btn" id="btn-add-split-photo" title="Add another photo">
+                          <span style="font-size: 1.15rem;">📷</span>
+                          <span>Add photos</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label style="font-size: 0.8rem; font-weight: 700; color: #0f172a; display: block; margin-bottom: 0.45rem;">
+                        Description <span style="color: #ef4444;">*</span>
+                      </label>
+                      <textarea id="new-grv-desc-input" class="wizard-textarea" style="width: 100%; min-height: 120px; font-size: 0.875rem;" placeholder="Provide accurate details..." required>Garbage collection pending near Rajkamal Square.</textarea>
+                    </div>
+                  </div>
+
+                  <!-- Right Column: Assign responsibility -->
+                  <div>
+                    <h3 class="split-col-title">Assign responsibility</h3>
+
+                    <!-- Zone & Ward Side-by-Side -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1.15rem;">
+                      <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; color: #0f172a; display: block; margin-bottom: 0.45rem;">
+                          Zone <span style="color: #ef4444;">*</span>
+                        </label>
+                        <select id="new-grv-zone-select" class="wizard-select" required>
+                          <option value="Central Zone" selected>Central Zone</option>
+                          <option value="North Zone">North Zone</option>
+                          <option value="South Zone">South Zone</option>
+                          <option value="East Zone">East Zone</option>
+                          <option value="West Zone">West Zone</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; color: #0f172a; display: block; margin-bottom: 0.45rem;">
+                          Ward <span style="color: #ef4444;">*</span>
+                        </label>
+                        <select id="new-grv-ward-select" class="wizard-select" required>
+                          <option value="Ward 1">Ward 1</option>
+                          <option value="Ward 2">Ward 2</option>
+                          <option value="Ward 3">Ward 3</option>
+                          <option value="Ward 4">Ward 4</option>
+                          <option value="Ward 5" selected>Ward 5</option>
+                          <option value="Ward 6">Ward 6</option>
+                          <option value="Ward 7">Ward 7</option>
+                          <option value="Ward 8">Ward 8</option>
+                          <option value="Ward 9">Ward 9</option>
+                          <option value="Ward 10">Ward 10</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- Department -->
+                    <div style="margin-bottom: 1.15rem;">
+                      <label style="font-size: 0.8rem; font-weight: 700; color: #0f172a; display: block; margin-bottom: 0.45rem;">
+                        Department <span style="color: #ef4444;">*</span>
+                      </label>
+                      <select id="new-grv-dept-select" class="wizard-select" required>
+                        <option value="Sanitation" selected>Sanitation</option>
+                        <option value="Road Maintenance Department">Road Maintenance Department</option>
+                        <option value="Water Supply Department">Water Supply Department</option>
+                        <option value="Sewerage & Drainage Department">Sewerage & Drainage Department</option>
+                        <option value="Street Lighting Department">Street Lighting Department</option>
+                        <option value="Health & Hygiene Department">Health & Hygiene Department</option>
+                      </select>
+                    </div>
+
+                    <!-- Officer -->
+                    <div style="margin-bottom: 1.15rem;">
+                      <label style="font-size: 0.8rem; font-weight: 700; color: #0f172a; display: block; margin-bottom: 0.45rem;">
+                        Officer <span style="color: #ef4444;">*</span>
+                      </label>
+                      <select id="new-grv-officer-select" class="wizard-select" required>
+                        <option value="A. Deshmukh" selected>A. Deshmukh</option>
+                        <option value="Er. Rajesh Bansod">Er. Rajesh Bansod</option>
+                        <option value="Suresh Kumar">Suresh Kumar</option>
+                        <option value="Ramesh Patil">Ramesh Patil</option>
+                        <option value="Sunita Patil">Sunita Patil</option>
+                        <option value="Anjali Nair">Anjali Nair</option>
+                      </select>
+                      <div id="new-grv-officer-sub" style="font-size: 0.75rem; color: #64748b; margin-top: 0.35rem; font-weight: 500;">
+                        Sanitary Inspector • Ward 5
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <!-- Collapsible Additional Details Accordion -->
+                <div style="border-top: 1px solid #f1f5f9; margin-top: 1.75rem; padding-top: 1rem;">
+                  <button type="button" id="new-grv-additional-toggle" style="background: none; border: none; padding: 0.5rem 0; width: 100%; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: #0f172a; font-weight: 700; font-size: 0.875rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span id="new-grv-toggle-symbol" style="font-size: 1rem; color: #64748b; font-weight: 800;">+</span>
+                      <span>Additional details</span>
+                    </div>
+                    <span id="new-grv-toggle-arrow" style="font-size: 0.8rem; color: #94a3b8;">⌄</span>
+                  </button>
+
+                  <div id="new-grv-additional-content" style="display: none; padding-top: 1rem; border-top: 1px dashed #e2e8f0; margin-top: 0.75rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                      <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; color: #475569;">CITIZEN / PETITIONER NAME</label>
+                        <input type="text" id="new-grv-citizen-name" class="wizard-input" style="margin-top: 0.35rem;" value="Mohan Kulkarni" placeholder="Citizen Name" />
+                      </div>
+                      <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; color: #475569;">CITIZEN MOBILE NUMBER</label>
+                        <input type="tel" id="new-grv-citizen-mobile" class="wizard-input" style="margin-top: 0.35rem;" value="9822154320" maxlength="10" placeholder="10-digit mobile" />
+                      </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.85rem;">
+                      <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; color: #475569;">EXACT LANDMARK</label>
+                        <input type="text" id="new-grv-landmark" class="wizard-input" style="margin-top: 0.35rem;" value="Opposite City Bus Stand, Rajkamal Square" placeholder="Landmark details" />
+                      </div>
+                      <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; color: #475569;">PRIORITY SLA LEVEL</label>
+                        <select id="new-grv-priority" class="wizard-select" style="margin-top: 0.35rem;">
+                          <option value="HIGH">High Priority (24h SLA)</option>
+                          <option value="MEDIUM" selected>Medium Priority (48h SLA)</option>
+                          <option value="LOW">Low Priority (72h SLA)</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Footer Action Buttons -->
+                <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #f1f5f9; padding-top: 1.5rem; margin-top: 1.5rem;">
+                  <button type="button" id="btn-new-grv-draft" class="btn-split-draft">Save draft</button>
+                  <button type="submit" id="btn-new-grv-submit" class="btn-split-submit">Submit & Assign</button>
+                </div>
+
+              </form>
+            </div>
+
+          </div>
         </div>
 
       </div>

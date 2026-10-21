@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupMeetingsScreen();
   setupAppointmentScreens();
   setupDeptMasterScreen();
+  setupNewGrievanceSplitScreen();
   setupModals();
   setupCrossTabSync();
 
@@ -193,6 +194,7 @@ function showLoginModal() {
 // ============================================================================
 function setupSidebarNav() {
   const btnAll = document.getElementById('nav-btn-all-complaints');
+  const btnNewGrv = document.getElementById('nav-btn-new-grievance');
   const btnWb = document.getElementById('nav-btn-workbench');
   const btnTasks = document.getElementById('nav-btn-tasks');
   const btnMeetings = document.getElementById('nav-btn-meetings');
@@ -228,6 +230,7 @@ function setupSidebarNav() {
   window.switchAdminScreen = function(screenName) {
     activeAdminScreen = screenName;
     const sAll = document.getElementById('screen-all-complaints');
+    const sNewGrv = document.getElementById('screen-new-grievance');
     const sWb = document.getElementById('screen-workbench');
     const sTasks = document.getElementById('screen-tasks');
     const sMeetings = document.getElementById('screen-meetings');
@@ -236,6 +239,7 @@ function setupSidebarNav() {
     const sShowAppts = document.getElementById('screen-show-appointments');
 
     btnAll?.classList.toggle('active', screenName === 'all-complaints');
+    btnNewGrv?.classList.toggle('active', screenName === 'new-grievance');
     btnWb?.classList.toggle('active', screenName === 'workbench');
     btnTasks?.classList.toggle('active', screenName === 'tasks');
     btnMeetings?.classList.toggle('active', screenName === 'meetings');
@@ -244,6 +248,7 @@ function setupSidebarNav() {
     btnShowAppts?.classList.toggle('active', screenName === 'show-appointments');
 
     if (sAll) sAll.style.display = screenName === 'all-complaints' ? 'flex' : 'none';
+    if (sNewGrv) sNewGrv.style.display = screenName === 'new-grievance' ? 'flex' : 'none';
     if (sWb) sWb.style.display = screenName === 'workbench' ? 'flex' : 'none';
     if (sTasks) sTasks.style.display = screenName === 'tasks' ? 'flex' : 'none';
     if (sMeetings) sMeetings.style.display = screenName === 'meetings' ? 'flex' : 'none';
@@ -260,6 +265,7 @@ function setupSidebarNav() {
   };
 
   btnAll?.addEventListener('click', () => switchAdminScreen('all-complaints'));
+  btnNewGrv?.addEventListener('click', () => switchAdminScreen('new-grievance'));
   btnWb?.addEventListener('click', () => switchAdminScreen('workbench'));
   btnTasks?.addEventListener('click', () => switchAdminScreen('tasks'));
   btnMeetings?.addEventListener('click', () => switchAdminScreen('meetings'));
@@ -1774,5 +1780,152 @@ function setupCrossTabSync() {
   window.addEventListener('NTIS_APPOINTMENTS_UPDATED', () => {
     renderAppointmentMgmtScreen();
     renderShowAppointmentsScreen();
+  });
+}
+
+// ============================================================================
+// 11. Option 1 • Compact Split Layout (New Grievance Page - Figma Replica)
+// ============================================================================
+function setupNewGrievanceSplitScreen() {
+  const form = document.getElementById('new-grievance-split-form');
+  const photosList = document.getElementById('new-grv-photos-list');
+  const addPhotoBtn = document.getElementById('btn-add-split-photo');
+  const officerSelect = document.getElementById('new-grv-officer-select');
+  const officerSub = document.getElementById('new-grv-officer-sub');
+  const toggleBtn = document.getElementById('new-grv-additional-toggle');
+  const toggleContent = document.getElementById('new-grv-additional-content');
+  const toggleSymbol = document.getElementById('new-grv-toggle-symbol');
+  const toggleArrow = document.getElementById('new-grv-toggle-arrow');
+  const draftBtn = document.getElementById('btn-new-grv-draft');
+
+  // Officer designation map
+  const OFFICER_ROLES = {
+    'A. Deshmukh': 'Sanitary Inspector • Ward 5',
+    'Er. Rajesh Bansod': 'Deputy City Engineer • PWD',
+    'Suresh Kumar': 'Senior Health Inspector • Ward 2',
+    'Ramesh Patil': 'Junior Engineer • PWD Camp',
+    'Sunita Patil': 'Chief Inspector • Trade & Market',
+    'Anjali Nair': 'Executive Officer • Water Supply'
+  };
+
+  officerSelect?.addEventListener('change', () => {
+    const val = officerSelect.value;
+    if (officerSub) {
+      officerSub.textContent = OFFICER_ROLES[val] || 'Field Operational Officer • AMC';
+    }
+  });
+
+  // Photo delete handlers
+  photosList?.addEventListener('click', (e) => {
+    if (e.target.classList.contains('split-photo-delete')) {
+      const thumb = e.target.closest('.split-photo-thumb');
+      thumb?.remove();
+      showToast('Photo removed from evidence', 'info');
+    }
+  });
+
+  // Add photo sample handler
+  addPhotoBtn?.addEventListener('click', () => {
+    const samplePhotos = [
+      'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=500',
+      'https://images.unsplash.com/photo-1584463699047-9759d57a4103?w=500',
+      'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500'
+    ];
+    const randomPhoto = samplePhotos[Math.floor(Math.random() * samplePhotos.length)];
+    const newThumb = document.createElement('div');
+    newThumb.className = 'split-photo-thumb';
+    newThumb.innerHTML = `
+      <img src="${randomPhoto}" alt="Added evidence photo" />
+      <button type="button" class="split-photo-delete" title="Remove photo">✕</button>
+    `;
+    photosList.insertBefore(newThumb, addPhotoBtn);
+    showToast('Photo added to evidence list', 'success');
+  });
+
+  // Additional details accordion toggle
+  toggleBtn?.addEventListener('click', () => {
+    const isHidden = toggleContent.style.display === 'none';
+    toggleContent.style.display = isHidden ? 'block' : 'none';
+    if (toggleSymbol) toggleSymbol.textContent = isHidden ? '−' : '+';
+    if (toggleArrow) toggleArrow.textContent = isHidden ? '⌃' : '⌄';
+  });
+
+  // Save Draft
+  draftBtn?.addEventListener('click', () => {
+    const draft = {
+      desc: document.getElementById('new-grv-desc-input')?.value || '',
+      zone: document.getElementById('new-grv-zone-select')?.value || '',
+      ward: document.getElementById('new-grv-ward-select')?.value || '',
+      dept: document.getElementById('new-grv-dept-select')?.value || '',
+      officer: officerSelect?.value || '',
+      citizenName: document.getElementById('new-grv-citizen-name')?.value || '',
+      citizenMobile: document.getElementById('new-grv-citizen-mobile')?.value || '',
+      landmark: document.getElementById('new-grv-landmark')?.value || '',
+      priority: document.getElementById('new-grv-priority')?.value || 'MEDIUM'
+    };
+    localStorage.setItem('NTIS_GRIEVANCE_DRAFT_V1', JSON.stringify(draft));
+    showToast('Draft saved successfully to municipal desk!', 'info');
+  });
+
+  // Submit & Assign
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const desc = document.getElementById('new-grv-desc-input')?.value.trim();
+    const zone = document.getElementById('new-grv-zone-select')?.value;
+    const ward = document.getElementById('new-grv-ward-select')?.value;
+    const dept = document.getElementById('new-grv-dept-select')?.value;
+    const officer = officerSelect?.value;
+    const citizenName = document.getElementById('new-grv-citizen-name')?.value.trim() || 'Mohan Kulkarni';
+    const mobile = document.getElementById('new-grv-citizen-mobile')?.value.trim() || '9822154320';
+    const landmark = document.getElementById('new-grv-landmark')?.value.trim() || 'Rajkamal Square, Amravati';
+    const priority = document.getElementById('new-grv-priority')?.value || 'HIGH';
+
+    // Collect photos
+    const thumbs = photosList.querySelectorAll('.split-photo-thumb img');
+    const photos = Array.from(thumbs).map(img => img.src);
+    const primaryPhoto = photos[0] || 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500';
+
+    const complaints = Store.getAll();
+    const nextId = complaints.length > 0 ? Math.max(...complaints.map(c => Number(c.id) || 0)) + 1 : 230;
+    const grievanceNo = `GRV-2026-${String(nextId).padStart(6, '0')}`;
+
+    const newComplaint = {
+      id: nextId,
+      grievanceNo: grievanceNo,
+      trackingId: grievanceNo,
+      citizen: citizenName,
+      mobile: mobile,
+      department: dept,
+      category: 'Garbage Collection & Cleanliness',
+      location: `${landmark} (${ward}, ${zone})`,
+      landmark: landmark,
+      status: 'In Progress',
+      priority: priority,
+      submittedDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      slaRemaining: priority === 'HIGH' ? '23h remaining' : '47h remaining',
+      assignedOfficer: officer,
+      isNew: true,
+      images: {
+        before: primaryPhoto,
+        after: null
+      },
+      timeline: [
+        { step: 1, title: '1. Grievance Submitted', subtitle: `${citizenName} • Direct intake via Commissioner Desk`, status: 'done', current: false },
+        { step: 2, title: '2. Field Unit Assigned', subtitle: `Assigned to ${officer} (${zone}, ${ward})`, status: 'done', current: true },
+        { step: 3, title: '3. Under Review & Inspection', subtitle: 'Site inspection initiated', status: 'pending', current: false },
+        { step: 4, title: '4. Resolved & Closed', subtitle: 'Pending field resolution', status: 'pending', current: false }
+      ]
+    };
+
+    complaints.unshift(newComplaint);
+    Store.commitComplaints(complaints);
+
+    // Clear draft if any
+    localStorage.removeItem('NTIS_GRIEVANCE_DRAFT_V1');
+
+    showToast(`Grievance #${grievanceNo} submitted & assigned to ${officer}!`, 'success');
+
+    // Switch to all-complaints queue to see the new item
+    window.switchAdminScreen('all-complaints');
   });
 }
