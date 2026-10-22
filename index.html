@@ -118,7 +118,7 @@
       <div class="sidebar-nav-section">
         <span class="nav-section-label" data-i18n="navLabel">NAVIGATION</span>
         
-        <div id="nav-btn-dashboard" class="nav-item">
+        <div id="nav-btn-dashboard" class="nav-item active">
           <div class="nav-item-left">
             <span>📊</span>
             <span data-i18n="navDashboard">Dashboard (Overview)</span>
@@ -126,7 +126,7 @@
           <span>›</span>
         </div>
 
-        <div id="nav-btn-tracker" class="nav-item active">
+        <div id="nav-btn-tracker" class="nav-item">
           <div class="nav-item-left">
             <span>📈</span>
             <span data-i18n="navTracker">Live Tracker (Status)</span>
@@ -150,7 +150,7 @@
       <!-- ==============================================================
            VIEW 1: DASHBOARD (OVERVIEW) - GIS MAP & CAROUSEL (SCREENSHOT 1)
            ============================================================== -->
-      <div id="view-dashboard" style="display: none; flex-direction: column; flex: 1; height: 100%; gap: 0.75rem; padding: 0.85rem 1.25rem; overflow: hidden;">
+      <div id="view-dashboard" style="display: flex; flex-direction: column; flex: 1; height: 100%; gap: 0.75rem; padding: 0.85rem 1.25rem; overflow: hidden;">
         
         <!-- Top 4 KPI Summary Cards -->
         <div class="kpi-row">
@@ -220,7 +220,7 @@
       <!-- ==============================================================
            VIEW 2: LIVE TRACKER (STATUS) - EXACT MATCHING SCREENSHOT 3
            ============================================================== -->
-      <div id="view-tracker" style="display: flex; height: 100%; width: 100%;">
+      <div id="view-tracker" style="display: none; height: 100%; width: 100%;">
         
         <div class="track-page-container">
           
@@ -610,6 +610,193 @@
         </div>
       </form>
 
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       Edit Grievance Modal (Exact Match to User Reference Screenshot)
+       ==================================================================== -->
+  <div id="edit-grievance-modal" class="edit-modal-backdrop">
+    <div class="edit-grievance-card" role="dialog" aria-modal="true" aria-labelledby="eg-modal-title">
+      
+      <!-- Top Header Row -->
+      <div class="eg-header">
+        <button type="button" id="eg-btn-back-header" class="eg-pill-back-btn">
+          <span>←</span>
+          <span>Back</span>
+        </button>
+
+        <div class="eg-title-box">
+          <h3 id="eg-modal-title" class="eg-title">Edit Grievance</h3>
+          <span id="eg-token-badge" class="eg-token-pill">#GRV-2026-000201</span>
+        </div>
+
+        <button type="button" id="eg-btn-close" class="eg-circle-close-btn" title="Close">✕</button>
+      </div>
+
+      <!-- Modal Body (Scrollable Cards) -->
+      <form id="edit-grievance-form" class="eg-form-body">
+        
+        <!-- CARD 1: EVIDENCE PHOTOS (OPTIONAL) -->
+        <div class="eg-section-card">
+          <div class="eg-section-header">
+            <div class="eg-section-title">
+              <span class="eg-section-icon">📷</span>
+              <span>EVIDENCE PHOTOS (OPTIONAL)</span>
+            </div>
+            <span id="eg-photo-counter" class="eg-badge-pill">1/5 PHOTOS</span>
+          </div>
+
+          <div class="eg-photo-actions-row">
+            <input type="file" id="eg-photo-file-input" accept="image/*" style="display: none;" />
+            <button type="button" id="eg-btn-upload-photo" class="eg-btn-upload">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <span>Upload Photo</span>
+            </button>
+            <button type="button" id="eg-btn-camera" class="eg-btn-camera">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+              <span>Camera</span>
+            </button>
+          </div>
+
+          <div class="eg-tip-row">
+            <span class="eg-tip-icon">ⓘ</span>
+            <span>Tip: Photos taken with smartphone GPS enabled auto-fill the spot.</span>
+          </div>
+
+          <!-- Photo Thumbnail Gallery with remove cross -->
+          <div id="eg-photos-gallery" class="eg-photos-gallery">
+            <div id="eg-photo-preview-item" class="eg-photo-item">
+              <img id="eg-photo-preview-img" src="https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500" alt="Evidence" />
+              <button type="button" id="eg-btn-remove-photo" class="eg-btn-remove-photo" title="Remove photo">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: DEPARTMENT & DEFECT TYPE (2 Columns) -->
+        <div class="eg-section-card">
+          <div class="eg-grid-2col">
+            <div class="eg-field-group">
+              <label class="eg-field-label">
+                <span style="color: #2563eb;">🏛️</span>
+                <span>DEPARTMENT</span>
+                <span class="req-star">*</span>
+              </label>
+              <div class="eg-select-wrapper">
+                <select id="eg-dept-select" class="eg-select" required>
+                  <option value="Street Lighting Department">Street Lighting Department</option>
+                  <option value="Road Maintenance Department">Road Maintenance Department</option>
+                  <option value="Sewerage & Drainage Department">Sewerage & Drainage Department</option>
+                  <option value="Public Works Department">Public Works Department</option>
+                  <option value="Water Supply Department">Water Supply Department</option>
+                  <option value="Traffic Engineering Department">Traffic Engineering Department</option>
+                  <option value="Solid Waste Management Department">Solid Waste Management Department</option>
+                  <option value="Garden & Horticulture Department">Garden & Horticulture Department</option>
+                </select>
+                <span class="eg-select-arrow">⌄</span>
+              </div>
+            </div>
+
+            <div class="eg-field-group">
+              <label class="eg-field-label">
+                <span style="color: #059669;">🪚</span>
+                <span>DEFECT TYPE</span>
+                <span class="req-star">* *</span>
+              </label>
+              <div class="eg-select-wrapper">
+                <select id="eg-defect-select" class="eg-select" required>
+                  <option value="Light not working">Light not working</option>
+                  <option value="Potholes">Potholes</option>
+                  <option value="Broken manhole">Broken manhole</option>
+                  <option value="Surface damage">Surface damage</option>
+                  <option value="Congestion">Congestion</option>
+                  <option value="Waste burning">Waste burning</option>
+                  <option value="Garbage dump overflow">Garbage dump overflow</option>
+                  <option value="Water pipeline leakage">Water pipeline leakage</option>
+                  <option value="Sewer blockage">Sewer blockage</option>
+                  <option value="Fallen tree branch">Fallen tree branch</option>
+                </select>
+                <span class="eg-select-arrow">⌄</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: ROAD NAME / LANDMARK -->
+        <div class="eg-section-card">
+          <div class="eg-section-header" style="margin-bottom: 0.5rem;">
+            <label class="eg-field-label" style="margin-bottom: 0;">
+              <span style="color: #059669;">📍</span>
+              <span>ROAD NAME / LANDMARK</span>
+              <span class="req-star">*</span>
+            </label>
+            <button type="button" id="eg-btn-locate-me" class="eg-btn-locate">
+              <span class="eg-locate-dot">●</span>
+              <span>Locate Me</span>
+            </button>
+          </div>
+          <input type="text" id="eg-landmark-input" class="eg-input" placeholder="Enter landmark or street name" value="Camp Main Road, Amravati" required />
+        </div>
+
+        <!-- CARD 4: GRIEVANCE DESCRIPTION -->
+        <div class="eg-section-card">
+          <div class="eg-section-header" style="margin-bottom: 0.5rem;">
+            <label class="eg-field-label" style="margin-bottom: 0;">
+              <span style="color: #2563eb;">📄</span>
+              <span>GRIEVANCE DESCRIPTION</span>
+              <span class="req-star">* *</span>
+            </label>
+          </div>
+          <div class="eg-textarea-container">
+            <textarea id="eg-desc-textarea" class="eg-textarea" rows="4" maxlength="1000" placeholder="Describe the issue in detail..."></textarea>
+            <button type="button" id="eg-btn-voice" class="eg-btn-voice" title="Dictate with voice">
+              <span>🎙</span>
+              <span>Voice</span>
+            </button>
+          </div>
+          <div class="eg-char-counter">
+            <span id="eg-char-count">147</span>/1000
+          </div>
+        </div>
+
+        <!-- CARD 5: CITIZEN INFORMATION -->
+        <div class="eg-section-card">
+          <div class="eg-section-header" style="margin-bottom: 0.65rem;">
+            <div class="eg-section-title">
+              <span style="color: #059669;">👤</span>
+              <span>CITIZEN INFORMATION</span>
+            </div>
+          </div>
+          <div class="eg-grid-2col">
+            <div class="eg-field-group">
+              <input type="text" id="eg-citizen-name" class="eg-input" placeholder="Full Name" value="Arpita Lande" required />
+            </div>
+            <div class="eg-field-group">
+              <input type="tel" id="eg-citizen-phone" class="eg-input" placeholder="Mobile Number" value="7249876434" maxlength="10" required />
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Action Row -->
+        <div class="eg-footer">
+          <button type="button" id="eg-btn-back-footer" class="eg-pill-back-btn">
+            <span>←</span>
+            <span>Back</span>
+          </button>
+          <button type="submit" id="eg-btn-save-changes" class="eg-btn-save">
+            <span style="font-size: 1rem;">✓</span>
+            <span>Save Changes</span>
+          </button>
+        </div>
+
+      </form>
     </div>
   </div>
 

@@ -109,6 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupReportWizardModal();
   setupTicketActionButtons();
   setupCitizenAuth();
+  setupCitizenDossierDrawer();
+  setupEditGrievanceModal();
 
   renderKpiCards();
   renderBottomCards();
@@ -120,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'NTIS_COMPLAINTS_V1') {
       allGrievances = Store.getAll();
       renderKpiCards();
+      renderBottomCards();
       renderTicketList();
     }
   });
@@ -127,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('NTIS_STORE_UPDATED', () => {
     allGrievances = Store.getAll();
     renderKpiCards();
+    renderBottomCards();
     renderTicketList();
   });
 });
@@ -159,9 +163,45 @@ function setupNavigationTabs() {
     }
   }
 
-  if (btnDashboard) btnDashboard.addEventListener('click', () => switchTab('dashboard'));
-  if (btnTracker) btnTracker.addEventListener('click', () => switchTab('tracker'));
-  if (homeBtn) homeBtn.addEventListener('click', () => switchTab('dashboard'));
+  if (btnDashboard) {
+    btnDashboard.addEventListener('click', () => {
+      if (window.location.hash) {
+        history.replaceState(null, '', window.location.pathname);
+      }
+      switchTab('dashboard');
+    });
+  }
+
+  if (btnTracker) {
+    btnTracker.addEventListener('click', () => {
+      window.location.hash = '#tracker';
+      switchTab('tracker');
+    });
+  }
+
+  if (homeBtn) {
+    homeBtn.addEventListener('click', () => {
+      if (window.location.hash) {
+        history.replaceState(null, '', window.location.pathname);
+      }
+      switchTab('dashboard');
+    });
+  }
+
+  // Initial tab state (default is always Dashboard Overview unless #tracker is explicitly in URL)
+  if (window.location.hash === '#tracker') {
+    switchTab('tracker');
+  } else {
+    switchTab('dashboard');
+  }
+
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash === '#tracker') {
+      switchTab('tracker');
+    } else {
+      switchTab('dashboard');
+    }
+  });
 
   // Reset demo
   const resetBtn = document.getElementById('sidebar-reset-demo-btn');
@@ -315,9 +355,7 @@ function setupTicketActionButtons() {
 
   if (btnEdit) {
     btnEdit.addEventListener('click', () => {
-      showToast('Grievance loaded into wizard for revision.', 'info');
-      const modal = document.getElementById('report-modal');
-      if (modal) modal.classList.add('open');
+      openEditGrievanceModal(selectedTicketToken);
     });
   }
 
@@ -549,33 +587,51 @@ function renderBottomCards() {
   const container = document.getElementById('map-bottom-cards');
   if (!container) return;
 
-  container.innerHTML = allGrievances.slice(0, 4).map(g => `
-    <div class="complaint-card-tile">
-      <div class="card-tile-header">
-        <span class="ward-tag">📍 Ward 1</span>
-        <span class="status-tag-pending">Pending</span>
-      </div>
-      <div class="card-tile-body">
-        <h4>${g.title || g.category}</h4>
-        <div class="card-tile-location">${g.location || 'main road, Amravati'}</div>
-      </div>
-      <div class="card-split-image-box">
-        <div class="split-side">
-          <span class="split-pill-badge pill-before">Before</span>
-          <img src="${(g.images && g.images.before) ? g.images.before : 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500'}" alt="Before" />
+  const displayList = allGrievances.length > 0 ? allGrievances.slice(0, 4) : Store.getAll().slice(0, 4);
+
+  container.innerHTML = displayList.map(g => {
+    const gid = g.id || g.trackingId || g.grievanceNo;
+    const isResolved = g.status === 'Resolved';
+    const isInProgress = g.status === 'In Progress';
+    const statusStyle = isResolved ? 'background: #dcfce7; color: #15803d; border: 1px solid #86efac;' : 
+                        (isInProgress ? 'background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc;' : '');
+    const beforeImg = (g.images && g.images.before) ? g.images.before : 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500';
+    const afterImg = (g.images && g.images.after) ? g.images.after : null;
+    const votes = currentDossierVotes[gid] || 0;
+
+    return `
+      <div class="complaint-card-tile" onclick="window.openCitizenDossier('${gid}')" style="cursor: pointer;" title="Click to view full dossier">
+        <div class="card-tile-header">
+          <span class="ward-tag">📍 ${g.ward || (g.location && g.location.includes('Ward') ? g.location : 'Ward 1')}</span>
+          <span class="status-tag-pending" style="${statusStyle}">${g.status || 'Pending'}</span>
         </div>
-        <div class="split-center-divider"></div>
-        <div class="split-side" style="background: #0f172a;">
-          <span class="split-pill-badge pill-pending-fix">Pending Fix</span>
-          <div class="pending-fix-placeholder">In Progress<br/>Fix will appear once resolved</div>
+        <div class="card-tile-body">
+          <h4>${g.title || g.category || 'Civic Issue'}</h4>
+          <div class="card-tile-location">${g.landmark || g.location || 'main road, Amravati'}</div>
+        </div>
+        <div class="card-split-image-box">
+          <div class="split-side">
+            <span class="split-pill-badge pill-before">Before</span>
+            <img src="${beforeImg}" alt="Before" />
+          </div>
+          <div class="split-center-divider"></div>
+          <div class="split-side" style="background: #0f172a; position: relative; overflow: hidden;">
+            ${afterImg ? `
+              <span class="split-pill-badge" style="position: absolute; top: 6px; right: 6px; background: rgba(16, 185, 129, 0.9); color: #ffffff; font-size: 9px; font-weight: 800; padding: 1px 6px; border-radius: 9999px; z-index: 2;">After</span>
+              <img src="${afterImg}" alt="After" style="width: 100%; height: 100%; object-fit: cover;" />
+            ` : `
+              <span class="split-pill-badge pill-pending-fix">Pending Fix</span>
+              <div class="pending-fix-placeholder">In Progress<br/>Fix will appear once resolved</div>
+            `}
+          </div>
+        </div>
+        <div class="card-tile-footer">
+          <button type="button" class="btn-vote" onclick="event.stopPropagation(); window.voteCitizenCard('${gid}', this)">✓ ${votes} Votes</button>
+          <button type="button" class="btn-tile-details" onclick="event.stopPropagation(); window.openCitizenDossier('${gid}')">Details →</button>
         </div>
       </div>
-      <div class="card-tile-footer">
-        <button type="button" class="btn-vote">✓ 0 Votes</button>
-        <button type="button" class="btn-tile-details" onclick="document.getElementById('nav-btn-tracker').click()">Details →</button>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function populateDropdowns() {
@@ -768,3 +824,711 @@ function setupCitizenAuth() {
 
   renderProfile();
 }
+
+// ============================================================================
+// 8. Citizen Dashboard Slide-Over Dossier Drawer & Comparison Slider Engine
+// ============================================================================
+let currentDossierIndex = 0;
+let currentDossierList = [];
+const currentDossierVotes = {};
+
+export function setCitizenSliderPos(pct) {
+  const foreground = document.getElementById('cd-foreground-layer');
+  const divider = document.getElementById('cd-divider-line');
+  const handle = document.getElementById('cd-handle-button');
+  const clamped = Math.max(0, Math.min(100, pct));
+  if (foreground) foreground.style.clipPath = `inset(0 ${100 - clamped}% 0 0)`;
+  if (divider) divider.style.left = `${clamped}%`;
+  if (handle) handle.setAttribute('aria-valuenow', Math.round(clamped));
+}
+
+export function openCitizenDossier(id) {
+  currentDossierList = Store.getAll();
+  if (!currentDossierList || currentDossierList.length === 0) return;
+
+  let idx = currentDossierList.findIndex(g => String(g.id) === String(id) || g.grievanceNo === id || g.trackingId === id);
+  if (idx === -1) idx = 0;
+  currentDossierIndex = idx;
+  const g = currentDossierList[currentDossierIndex];
+  if (!g) return;
+
+  // 1. Header Badges
+  const grvNoEl = document.getElementById('cd-grievance-no');
+  const statusEl = document.getElementById('cd-status-badge');
+  const dispGrievanceNo = g.grievanceNo || g.trackingId || ('GRV-2026-' + String(g.id).padStart(6, '0'));
+  
+  if (grvNoEl) grvNoEl.textContent = dispGrievanceNo;
+  if (statusEl) {
+    statusEl.textContent = `● ${g.status || 'Pending'}`;
+    if (g.status === 'Resolved') {
+      statusEl.style.background = '#ecfdf5';
+      statusEl.style.color = '#047857';
+      statusEl.style.borderColor = '#a7f3d0';
+    } else if (g.status === 'In Progress') {
+      statusEl.style.background = '#eff6ff';
+      statusEl.style.color = '#1d4ed8';
+      statusEl.style.borderColor = '#bfdbfe';
+    } else {
+      statusEl.style.background = '#fffbeb';
+      statusEl.style.color = '#b45309';
+      statusEl.style.borderColor = '#fde68a';
+    }
+  }
+
+  // 2. Issue Title & SLA Banner
+  const titleEl = document.getElementById('cd-issue-title');
+  const slaTextEl = document.getElementById('cd-sla-text');
+  const slaStatusEl = document.getElementById('cd-sla-status');
+  if (titleEl) titleEl.textContent = g.title || g.category || 'Civic Issue';
+  if (slaTextEl) slaTextEl.textContent = `SLA Target: ${g.slaHours ? g.slaHours + 'h' : '24h'}`;
+  if (slaStatusEl) {
+    if (g.status === 'Resolved') {
+      slaStatusEl.textContent = 'Resolved within SLA';
+      slaStatusEl.style.color = '#059669';
+    } else {
+      slaStatusEl.textContent = '100% On Track';
+      slaStatusEl.style.color = '#059669';
+    }
+  }
+
+  // 3. Before & After Slider Setup
+  const beforeImgEl = document.getElementById('cd-slider-before-img');
+  const afterContentEl = document.getElementById('cd-slider-after-content');
+  const beforeUrl = (g.images && g.images.before) ? g.images.before : 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500';
+  const afterUrl = (g.images && g.images.after) ? g.images.after : null;
+
+  if (beforeImgEl) beforeImgEl.src = beforeUrl;
+
+  if (afterContentEl) {
+    if (afterUrl) {
+      afterContentEl.innerHTML = `
+        <img src="${afterUrl}" alt="After resolution" style="width: 100%; height: 100%; object-fit: cover; user-select: none; pointer-events: none;" draggable="false" />
+        <span style="position: absolute; top: 10px; right: 10px; padding: 2px 9px; border-radius: 9999px; background: rgba(16, 185, 129, 0.95); color: #ffffff; font-size: 10px; font-weight: 900; letter-spacing: 0.025em; box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: none; z-index: 10;">
+          After
+        </span>
+      `;
+    } else {
+      afterContentEl.innerHTML = `
+        <div style="width: 100%; height: 100%; background: radial-gradient(circle at 50% 40%, #1e293b 0%, #0f172a 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; text-align: center; color: #ffffff;">
+          <div style="position: relative; width: 44px; height: 44px; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: center;">
+            <span style="position: absolute; inset: 0; border-radius: 50%; background: #10b981; opacity: 0.3; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>
+            <div style="position: relative; width: 40px; height: 40px; border-radius: 50%; background: #064e3b; border: 2px solid #10b981; display: flex; align-items: center; justify-content: center; color: #34d399; font-size: 16px;">
+              ⚡
+            </div>
+          </div>
+          <div style="font-size: 0.85rem; font-weight: 800; color: #f8fafc; letter-spacing: 0.025em; margin-bottom: 0.25rem;">
+            Work In Progress
+          </div>
+          <p style="font-size: 0.75rem; color: #94a3b8; max-width: 240px; margin: 0; line-height: 1.4;">
+            Municipal resolution proof will appear here once the field squad completes the fix.
+          </p>
+        </div>
+      `;
+    }
+  }
+
+  // Reset slider position to 50%
+  setCitizenSliderPos(50);
+
+  // 4. Resolution Timeline Card
+  const progressBadge = document.getElementById('cd-timeline-progress-badge');
+  const stepsContainer = document.getElementById('cd-timeline-steps-container');
+
+  const isResolved = g.status === 'Resolved';
+  const isInProgress = g.status === 'In Progress';
+
+  if (progressBadge) {
+    if (isResolved) {
+      progressBadge.textContent = '4/4 Resolved';
+      progressBadge.style.background = '#ecfdf5';
+      progressBadge.style.color = '#047857';
+      progressBadge.style.borderColor = '#a7f3d0';
+    } else if (isInProgress) {
+      progressBadge.textContent = '2/4 In Progress';
+      progressBadge.style.background = '#eff6ff';
+      progressBadge.style.color = '#1d4ed8';
+      progressBadge.style.borderColor = '#bfdbfe';
+    } else {
+      progressBadge.textContent = '1/4 Submitted';
+      progressBadge.style.background = '#fef3c7';
+      progressBadge.style.color = '#92400e';
+      progressBadge.style.borderColor = '#fde68a';
+    }
+  }
+
+  // 4 steps definition
+  const officerName = g.assignedOfficer && g.assignedOfficer !== 'Unassigned' ? g.assignedOfficer : (g.department || 'Ward Field Squad');
+  const dateStr = g.submittedDate || 'Oct 21, 2026';
+  
+  const stepItems = [
+    {
+      num: 1,
+      title: '1. Grievance Submitted',
+      sub: `${g.citizen || 'Citizen'} • Submitted`,
+      time: dateStr,
+      status: 'done'
+    },
+    {
+      num: 2,
+      title: '2. Field Unit Assigned',
+      sub: `Assigned to ${officerName}`,
+      time: isResolved || isInProgress ? dateStr : 'Pending',
+      status: isResolved || isInProgress ? 'done' : 'active'
+    },
+    {
+      num: 3,
+      title: '3. Field Action Deployed',
+      sub: isResolved ? 'Road asphalt leveling & patch work completed' : (isInProgress ? 'Field squad dispatched on-site' : 'Pending squad mobilization'),
+      time: isResolved ? 'Completed' : (isInProgress ? 'Active' : 'Awaiting'),
+      status: isResolved ? 'done' : (isInProgress ? 'active' : 'pending')
+    },
+    {
+      num: 4,
+      title: '4. Verified & Resolved',
+      sub: isResolved ? 'Verified by Ward Municipal Inspector' : 'Final inspection and photo validation',
+      time: isResolved ? 'Closed' : 'Estimated 24h',
+      status: isResolved ? 'done' : 'pending'
+    }
+  ];
+
+  if (stepsContainer) {
+    stepsContainer.innerHTML = stepItems.map((step, sIdx) => {
+      const isLast = sIdx === stepItems.length - 1;
+      let iconContent = step.status === 'done' ? '✓' : step.num;
+      let iconClass = `cd-step-icon ${step.status}`;
+      return `
+        <div class="cd-timeline-step-row">
+          <div class="cd-step-marker">
+            <div class="${iconClass}">${iconContent}</div>
+            ${!isLast ? `<div class="cd-step-line" style="${step.status === 'done' ? 'background: #059669;' : ''}"></div>` : ''}
+          </div>
+          <div class="cd-step-content">
+            <div class="cd-step-title">${step.title}</div>
+            <div class="cd-step-sub">${step.sub}</div>
+          </div>
+          <div class="cd-step-time">${step.time}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // 5. Vote Count
+  const currentVotes = currentDossierVotes[g.id] || 0;
+  const voteLabel = document.getElementById('cd-vote-label');
+  if (voteLabel) voteLabel.textContent = `${currentVotes} Votes`;
+
+  // Open Drawer
+  const drawer = document.getElementById('citizen-dossier-drawer');
+  const backdrop = document.getElementById('citizen-dossier-backdrop');
+  if (drawer) drawer.classList.add('open');
+  if (backdrop) backdrop.classList.add('open');
+}
+
+export function setupCitizenDossierDrawer() {
+  const drawer = document.getElementById('citizen-dossier-drawer');
+  const backdrop = document.getElementById('citizen-dossier-backdrop');
+  const btnClose = document.getElementById('cd-btn-close');
+  const btnBack = document.getElementById('cd-btn-back');
+  const btnPrev = document.getElementById('cd-btn-prev');
+  const btnNext = document.getElementById('cd-btn-next');
+  const btnShare = document.getElementById('cd-btn-share');
+  const btnVote = document.getElementById('cd-btn-vote');
+  const btnReportSimilar = document.getElementById('cd-btn-report-similar');
+  const sliderBox = document.getElementById('cd-slider-box');
+  const handleBtn = document.getElementById('cd-handle-button');
+
+  const closeDrawer = () => {
+    if (drawer) drawer.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('open');
+  };
+
+  if (btnClose) btnClose.addEventListener('click', closeDrawer);
+  if (btnBack) btnBack.addEventListener('click', closeDrawer);
+  if (backdrop) backdrop.addEventListener('click', closeDrawer);
+
+  // Keyboard navigation & dismissal
+  document.addEventListener('keydown', (e) => {
+    if (!drawer || !drawer.classList.contains('open')) return;
+    if (e.key === 'Escape') {
+      closeDrawer();
+    } else if (e.key === 'ArrowLeft' && e.altKey) {
+      btnPrev?.click();
+    } else if (e.key === 'ArrowRight' && e.altKey) {
+      btnNext?.click();
+    }
+  });
+
+  // Previous & Next navigation
+  btnPrev?.addEventListener('click', () => {
+    if (!currentDossierList.length) currentDossierList = Store.getAll();
+    if (!currentDossierList.length) return;
+    currentDossierIndex = (currentDossierIndex - 1 + currentDossierList.length) % currentDossierList.length;
+    openCitizenDossier(currentDossierList[currentDossierIndex].id);
+  });
+
+  btnNext?.addEventListener('click', () => {
+    if (!currentDossierList.length) currentDossierList = Store.getAll();
+    if (!currentDossierList.length) return;
+    currentDossierIndex = (currentDossierIndex + 1) % currentDossierList.length;
+    openCitizenDossier(currentDossierList[currentDossierIndex].id);
+  });
+
+  // Share button
+  btnShare?.addEventListener('click', async () => {
+    const g = currentDossierList[currentDossierIndex];
+    const grvId = g ? (g.grievanceNo || g.trackingId || g.id) : '';
+    const shareData = {
+      title: `Grievance #${grvId} - Amravati Civic Portal`,
+      text: `Tracking status of grievance #${grvId} (${g?.category || 'Civic Issue'}): ${g?.status || 'Pending'}`,
+      url: window.location.href
+    };
+    if (navigator.share && window.isSecureContext) {
+      try {
+        await navigator.share(shareData);
+        showToast('Shared successfully!', 'success');
+        return;
+      } catch (err) {
+        // user cancelled or share failed, fallback to copy
+      }
+    }
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?id=${grvId}`);
+      showToast(`Link for grievance #${grvId} copied to clipboard!`, 'success');
+    }
+  });
+
+  // Upvote in Drawer
+  btnVote?.addEventListener('click', () => {
+    const g = currentDossierList[currentDossierIndex];
+    if (!g) return;
+    const gid = g.id;
+    currentDossierVotes[gid] = (currentDossierVotes[gid] || 0) + 1;
+    const voteLabel = document.getElementById('cd-vote-label');
+    if (voteLabel) voteLabel.textContent = `${currentDossierVotes[gid]} Votes`;
+    renderBottomCards();
+    showToast(`✓ Upvoted! Community priority updated for #${g.grievanceNo || gid}.`, 'success');
+  });
+
+  // Report Similar Issue button
+  btnReportSimilar?.addEventListener('click', () => {
+    const g = currentDossierList[currentDossierIndex];
+    closeDrawer();
+
+    const reportModal = document.getElementById('report-modal');
+    if (reportModal) {
+      reportModal.classList.add('open');
+      if (g) {
+        const deptSel = document.getElementById('wiz-dept-select');
+        const defectSel = document.getElementById('wiz-defect-select');
+        const landmarkInput = document.getElementById('wiz-landmark-input');
+        if (deptSel && g.department) deptSel.value = g.department;
+        if (defectSel && g.category) defectSel.value = g.category;
+        if (landmarkInput && (g.landmark || g.location)) landmarkInput.value = g.landmark || g.location;
+      }
+      showToast(`Reporting similar issue for ${g?.category || 'Civic defect'}`, 'info');
+    }
+  });
+
+  // Slider Dragging (Pointer and Touch)
+  if (sliderBox) {
+    let isDragging = false;
+
+    const onPointerMove = (e) => {
+      if (!isDragging) return;
+      const rect = sliderBox.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const offsetX = clientX - rect.left;
+      const pct = (offsetX / rect.width) * 100;
+      setCitizenSliderPos(pct);
+    };
+
+    const onPointerUp = () => {
+      isDragging = false;
+      window.removeEventListener('mousemove', onPointerMove);
+      window.removeEventListener('mouseup', onPointerUp);
+      window.removeEventListener('touchmove', onPointerMove);
+      window.removeEventListener('touchend', onPointerUp);
+    };
+
+    const startDrag = (e) => {
+      isDragging = true;
+      onPointerMove(e);
+      window.addEventListener('mousemove', onPointerMove);
+      window.addEventListener('mouseup', onPointerUp);
+      window.addEventListener('touchmove', onPointerMove, { passive: true });
+      window.addEventListener('touchend', onPointerUp);
+    };
+
+    sliderBox.addEventListener('mousedown', startDrag);
+    sliderBox.addEventListener('touchstart', startDrag, { passive: true });
+  }
+
+  // Handle keyboard arrow navigation on slider
+  if (handleBtn) {
+    handleBtn.addEventListener('keydown', (e) => {
+      let currentVal = parseFloat(handleBtn.getAttribute('aria-valuenow') || '50');
+      if (e.key === 'ArrowLeft') {
+        setCitizenSliderPos(Math.max(0, currentVal - 5));
+        e.preventDefault();
+      } else if (e.key === 'ArrowRight') {
+        setCitizenSliderPos(Math.min(100, currentVal + 5));
+        e.preventDefault();
+      }
+    });
+  }
+}
+
+// Card tile upvoting
+window.voteCitizenCard = function(id, btnElement) {
+  currentDossierVotes[id] = (currentDossierVotes[id] || 0) + 1;
+  if (btnElement) {
+    btnElement.textContent = `✓ ${currentDossierVotes[id]} Votes`;
+    btnElement.style.background = '#dcfce7';
+    btnElement.style.color = '#15803d';
+  }
+  showToast(`✓ Upvoted grievance #${id}!`, 'success');
+};
+
+// Expose on global window object
+window.openCitizenDossier = openCitizenDossier;
+window.setupCitizenDossierDrawer = setupCitizenDossierDrawer;
+
+// ============================================================================
+// 9. Edit Grievance Modal Engine (Exact Match to User Reference Screenshot)
+// ============================================================================
+let activeEditingToken = null;
+let currentEditPhoto = null;
+
+export function openEditGrievanceModal(tokenOrId) {
+  const modal = document.getElementById('edit-grievance-modal');
+  if (!modal) return;
+
+  const targetToken = tokenOrId || selectedTicketToken || '#GRV-2026-000175';
+  activeEditingToken = targetToken;
+  const clean = String(targetToken).replace(/^#/, '');
+
+  // 1. Find from Store or TICKETS_SAMPLE
+  const all = Store.getAll();
+  let item = all.find(c => String(c.id) === clean || c.grievanceNo === clean || c.trackingId === clean || ('#' + c.grievanceNo) === targetToken);
+  
+  if (!item) {
+    const sample = TICKETS_SAMPLE.find(t => t.token === targetToken || t.token.replace(/^#/, '') === clean);
+    if (sample) {
+      item = {
+        grievanceNo: sample.token.replace(/^#/, ''),
+        department: sample.department,
+        category: sample.title,
+        title: sample.title,
+        location: sample.location,
+        landmark: sample.location,
+        citizen: 'Arpita Lande',
+        mobile: '7249876434',
+        description: 'The streetlight fixture on the pole is not functioning properly, causing darkness in the area. Please inspect and repair the light at the earliest.',
+        images: { before: sample.photo }
+      };
+    } else {
+      item = {
+        grievanceNo: clean,
+        department: 'Street Lighting Department',
+        category: 'Light not working',
+        title: 'Light not working',
+        location: 'Rajapeth Main Road, Amravati',
+        landmark: 'Rajapeth Main Road',
+        citizen: 'Arpita Lande',
+        mobile: '7249876434',
+        description: 'The streetlight fixture on the pole is not functioning properly, causing darkness in the area. Please inspect and repair the light at the earliest.',
+        images: { before: 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500' }
+      };
+    }
+  }
+
+  // 2. Populate Header
+  const tokenBadge = document.getElementById('eg-token-badge');
+  if (tokenBadge) {
+    const dispToken = targetToken.startsWith('#') ? targetToken : ('#' + (item.grievanceNo || item.id));
+    tokenBadge.textContent = dispToken;
+  }
+
+  // 3. Populate Department & Defect Type
+  const deptSelect = document.getElementById('eg-dept-select');
+  const defectSelect = document.getElementById('eg-defect-select');
+  if (deptSelect && item.department) {
+    deptSelect.value = item.department;
+    if (deptSelect.selectedIndex === -1) {
+      const opt = document.createElement('option');
+      opt.value = item.department;
+      opt.textContent = item.department;
+      deptSelect.appendChild(opt);
+      deptSelect.value = item.department;
+    }
+  }
+  if (defectSelect && (item.category || item.title)) {
+    const defectVal = item.category || item.title;
+    defectSelect.value = defectVal;
+    if (defectSelect.selectedIndex === -1) {
+      const opt = document.createElement('option');
+      opt.value = defectVal;
+      opt.textContent = defectVal;
+      defectSelect.appendChild(opt);
+      defectSelect.value = defectVal;
+    }
+  }
+
+  // 4. Populate Landmark
+  const landmarkInput = document.getElementById('eg-landmark-input');
+  if (landmarkInput) {
+    landmarkInput.value = item.landmark || item.location || 'Camp Main Road, Amravati';
+  }
+
+  // 5. Populate Description & Counter
+  const descTextarea = document.getElementById('eg-desc-textarea');
+  const charCount = document.getElementById('eg-char-count');
+  const defaultDesc = item.description || (item.category ? `The ${item.category.toLowerCase()} at ${item.location || 'the specified location'} requires immediate municipal maintenance and inspection.` : 'Please inspect and repair the civic defect at the earliest.');
+  if (descTextarea) {
+    descTextarea.value = defaultDesc;
+    if (charCount) charCount.textContent = defaultDesc.length;
+  }
+
+  // 6. Populate Citizen Info
+  const citizenNameInput = document.getElementById('eg-citizen-name');
+  const citizenPhoneInput = document.getElementById('eg-citizen-phone');
+  if (citizenNameInput) citizenNameInput.value = item.citizen || 'Arpita Lande';
+  if (citizenPhoneInput) citizenPhoneInput.value = item.mobile || '7249876434';
+
+  // 7. Populate Evidence Photo
+  currentEditPhoto = (item.images && item.images.before) ? item.images.before : (item.photo || 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500');
+  const photoImg = document.getElementById('eg-photo-preview-img');
+  const photoItem = document.getElementById('eg-photo-preview-item');
+  const photoCounter = document.getElementById('eg-photo-counter');
+  if (photoImg && currentEditPhoto) {
+    photoImg.src = currentEditPhoto;
+    if (photoItem) photoItem.style.display = 'block';
+    if (photoCounter) photoCounter.textContent = '1/5 PHOTOS';
+  }
+
+  // 8. Open modal
+  modal.classList.add('open');
+}
+
+export function setupEditGrievanceModal() {
+  const modal = document.getElementById('edit-grievance-modal');
+  const btnClose = document.getElementById('eg-btn-close');
+  const btnBackHeader = document.getElementById('eg-btn-back-header');
+  const btnBackFooter = document.getElementById('eg-btn-back-footer');
+  const form = document.getElementById('edit-grievance-form');
+  const btnUpload = document.getElementById('eg-btn-upload-photo');
+  const btnCamera = document.getElementById('eg-btn-camera');
+  const fileInput = document.getElementById('eg-photo-file-input');
+  const btnRemovePhoto = document.getElementById('eg-btn-remove-photo');
+  const btnLocate = document.getElementById('eg-btn-locate-me');
+  const btnVoice = document.getElementById('eg-btn-voice');
+  const descTextarea = document.getElementById('eg-desc-textarea');
+  const charCount = document.getElementById('eg-char-count');
+
+  const closeModal = () => {
+    if (modal) modal.classList.remove('open');
+  };
+
+  if (btnClose) btnClose.addEventListener('click', closeModal);
+  if (btnBackHeader) btnBackHeader.addEventListener('click', closeModal);
+  if (btnBackFooter) btnBackFooter.addEventListener('click', closeModal);
+
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (modal && modal.classList.contains('open') && e.key === 'Escape') {
+      closeModal();
+    }
+  });
+
+  // Character counter
+  if (descTextarea && charCount) {
+    descTextarea.addEventListener('input', () => {
+      charCount.textContent = descTextarea.value.length;
+    });
+  }
+
+  // File Upload
+  if (btnUpload && fileInput) {
+    btnUpload.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          currentEditPhoto = evt.target.result;
+          const photoImg = document.getElementById('eg-photo-preview-img');
+          const photoItem = document.getElementById('eg-photo-preview-item');
+          const photoCounter = document.getElementById('eg-photo-counter');
+          if (photoImg) photoImg.src = currentEditPhoto;
+          if (photoItem) photoItem.style.display = 'block';
+          if (photoCounter) photoCounter.textContent = '1/5 PHOTOS';
+          showToast('Evidence photo attached successfully!', 'success');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // Camera Action
+  if (btnCamera && fileInput) {
+    btnCamera.addEventListener('click', () => {
+      fileInput.setAttribute('capture', 'environment');
+      fileInput.click();
+      showToast('Camera initiated for evidence capture', 'info');
+    });
+  }
+
+  // Remove photo
+  if (btnRemovePhoto) {
+    btnRemovePhoto.addEventListener('click', () => {
+      currentEditPhoto = null;
+      const photoItem = document.getElementById('eg-photo-preview-item');
+      const photoCounter = document.getElementById('eg-photo-counter');
+      if (photoItem) photoItem.style.display = 'none';
+      if (photoCounter) photoCounter.textContent = '0/5 PHOTOS';
+      showToast('Photo evidence removed', 'info');
+    });
+  }
+
+  // Locate Me
+  if (btnLocate) {
+    btnLocate.addEventListener('click', () => {
+      const landmarkInput = document.getElementById('eg-landmark-input');
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            if (landmarkInput) {
+              landmarkInput.value = `Camp Main Road, Amravati (${pos.coords.latitude.toFixed(4)}° N, ${pos.coords.longitude.toFixed(4)}° E)`;
+            }
+            showToast('📍 GPS Location detected & filled!', 'success');
+          },
+          () => {
+            if (landmarkInput) {
+              landmarkInput.value = 'Camp Main Road, Amravati (GPS: 20.9320° N, 77.7550° E)';
+            }
+            showToast('📍 Municipal GPS coordinates tagged!', 'info');
+          }
+        );
+      } else {
+        if (landmarkInput) {
+          landmarkInput.value = 'Camp Main Road, Amravati (GPS: 20.9320° N, 77.7550° E)';
+        }
+        showToast('📍 Municipal GPS coordinates tagged!', 'info');
+      }
+    });
+  }
+
+  // Voice dictation
+  if (btnVoice && descTextarea) {
+    let recognition = null;
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRec) {
+      recognition = new SpeechRec();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-IN';
+      recognition.onstart = () => {
+        btnVoice.classList.add('recording');
+        showToast('🎙️ Listening... speak your grievance description', 'info');
+      };
+      recognition.onresult = (evt) => {
+        const transcript = evt.results[0][0].transcript;
+        descTextarea.value = (descTextarea.value + ' ' + transcript).trim();
+        if (charCount) charCount.textContent = descTextarea.value.length;
+        showToast('Voice dictation added!', 'success');
+      };
+      recognition.onend = () => {
+        btnVoice.classList.remove('recording');
+      };
+      recognition.onerror = () => {
+        btnVoice.classList.remove('recording');
+      };
+    }
+
+    btnVoice.addEventListener('click', () => {
+      if (recognition) {
+        try {
+          recognition.start();
+        } catch (e) {
+          recognition.stop();
+        }
+      } else {
+        const sampleText = ' The streetlight fixture on the pole is not functioning properly, causing darkness in the area. Please inspect and repair the light at the earliest.';
+        descTextarea.value = (descTextarea.value + sampleText).trim();
+        if (charCount) charCount.textContent = descTextarea.value.length;
+        showToast('🎙️ Simulated voice dictation inserted!', 'info');
+      }
+    });
+  }
+
+  // Form submit / Save Changes
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const dept = document.getElementById('eg-dept-select')?.value;
+      const defect = document.getElementById('eg-defect-select')?.value;
+      const landmark = document.getElementById('eg-landmark-input')?.value;
+      const desc = document.getElementById('eg-desc-textarea')?.value;
+      const citizenName = document.getElementById('eg-citizen-name')?.value;
+      const citizenPhone = document.getElementById('eg-citizen-phone')?.value;
+
+      const clean = String(activeEditingToken || selectedTicketToken || '').replace(/^#/, '');
+      const all = Store.getComplaints();
+      let item = all.find(c => String(c.id) === clean || c.grievanceNo === clean || c.trackingId === clean);
+
+      if (item) {
+        item.department = dept;
+        item.category = defect;
+        item.title = defect;
+        item.location = landmark;
+        item.landmark = landmark;
+        item.description = desc;
+        item.citizen = citizenName;
+        item.mobile = citizenPhone;
+        if (currentEditPhoto) {
+          if (!item.images) item.images = {};
+          item.images.before = currentEditPhoto;
+        }
+        Store.commitComplaints(all);
+      } else {
+        const sample = TICKETS_SAMPLE.find(t => t.token === activeEditingToken || t.token.replace(/^#/, '') === clean);
+        if (sample) {
+          sample.title = defect;
+          sample.department = dept;
+          sample.location = landmark;
+          if (currentEditPhoto) sample.photo = currentEditPhoto;
+        }
+      }
+
+      // Update Tracker Details panel
+      const detailTitle = document.getElementById('detail-ticket-title');
+      const detailDept = document.getElementById('detail-ticket-dept');
+      const detailLoc = document.getElementById('detail-ticket-location');
+      const detailImg = document.getElementById('detail-before-img');
+      const defectEl = document.getElementById('flow-card-defect');
+
+      if (detailTitle) detailTitle.textContent = defect;
+      if (detailDept) detailDept.textContent = dept;
+      if (detailLoc) detailLoc.textContent = landmark;
+      if (defectEl) defectEl.textContent = defect;
+      if (detailImg && currentEditPhoto) detailImg.src = currentEditPhoto;
+
+      // Re-render ticket list and bottom cards
+      renderTicketList();
+      renderBottomCards();
+
+      closeModal();
+      showToast(`✓ Grievance ${activeEditingToken || ''} updated successfully!`, 'success');
+    });
+  }
+}
+
+window.openEditGrievanceModal = openEditGrievanceModal;
+window.setupEditGrievanceModal = setupEditGrievanceModal;
+
