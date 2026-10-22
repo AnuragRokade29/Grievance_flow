@@ -1198,6 +1198,275 @@
   </div>
 
   <!-- ====================================================================
+       Complaint Dossier Modal (Exact Replica of User Reference Screenshot)
+       ==================================================================== -->
+  <div id="complaint-dossier-modal" class="slideover-backdrop">
+    <div class="admin-login-card" style="margin: auto; max-width: 680px; width: 100%; border-radius: 16px; background: #ffffff; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25); overflow: hidden; display: flex; flex-direction: column;">
+      
+      <!-- Modal Header -->
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; padding: 1.5rem 1.5rem 0.85rem 1.5rem;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.65rem;">
+            <h2 id="modal-dossier-id" style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 0; font-family: monospace;">GRV-2026-000201</h2>
+            <span id="modal-dossier-status" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; font-weight: 700; background: #fef3c7; color: #b45309; border: 1px solid #fde68a; padding: 0.2rem 0.65rem; border-radius: 9999px;">
+              🕒 Pending
+            </span>
+          </div>
+          <div style="font-size: 0.825rem; color: #64748b; margin-top: 0.25rem;">Official civic redressal ticket record</div>
+        </div>
+        <button type="button" id="complaint-dossier-modal-close" style="width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid #0284c7; background: #ffffff; color: #0284c7; font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" title="Close modal">
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div style="padding: 0.5rem 1.5rem 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; max-height: calc(85vh - 120px); overflow-y: auto;">
+        
+        <!-- Section 1: Department & Category -->
+        <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; background: #ffffff;">
+          <div style="font-size: 0.725rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.75rem;">
+            DEPARTMENT & CATEGORY
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div style="width: 40px; height: 40px; border-radius: 8px; background: #f0fdf4; border: 1px solid #bbf7d0; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; color: #16a34a; flex-shrink: 0;">
+                🏢
+              </div>
+              <div style="min-width: 0;">
+                <div style="font-size: 0.725rem; color: #64748b; font-weight: 600;">Department</div>
+                <div id="modal-dossier-dept" style="font-size: 0.875rem; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Street Lighting Department</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div style="width: 40px; height: 40px; border-radius: 8px; background: #eff6ff; border: 1px solid #bfdbfe; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; color: #2563eb; flex-shrink: 0;">
+                🏷️
+              </div>
+              <div style="min-width: 0;">
+                <div style="font-size: 0.725rem; color: #64748b; font-weight: 600;">Defect Type *</div>
+                <div id="modal-dossier-category" style="font-size: 0.875rem; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Light not working</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Citizen Contact & Location / Landmark -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <!-- Citizen Contact Card -->
+          <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; background: #ffffff;">
+            <div style="font-size: 0.725rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.75rem;">
+              CITIZEN CONTACT
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: #64748b; font-size: 0.85rem;">👤</span>
+                <span id="modal-dossier-citizen" style="font-size: 0.875rem; font-weight: 700; color: #0f172a;">Arpita Lande</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: #64748b; font-size: 0.85rem;">📞</span>
+                <span id="modal-dossier-mobile" style="font-size: 0.85rem; font-weight: 600; color: #475569; font-family: monospace;">72****6434</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Location / Landmark Card -->
+          <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; background: #ffffff;">
+            <div style="font-size: 0.725rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.75rem;">
+              LOCATION / LANDMARK
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: #64748b; font-size: 0.85rem;">📍</span>
+                <span id="modal-dossier-location" style="font-size: 0.875rem; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">hdgffghy</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: #64748b; font-size: 0.85rem;">📅</span>
+                <span id="modal-dossier-date" style="font-size: 0.85rem; font-weight: 600; color: #64748b;">Oct 21, 2026</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Issue Description -->
+        <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; background: #ffffff;">
+          <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.725rem; font-weight: 800; color: #ea580c; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.65rem;">
+            <span>📄</span>
+            <span>ISSUE DESCRIPTION</span>
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; padding: 0.85rem 1rem; font-size: 0.85rem; color: #334155; line-height: 1.55;" id="modal-dossier-desc">
+            The streetlight fixture on the pole is not functioning properly, causing darkness in the area. Please inspect and repair the light at the earliest.
+          </div>
+        </div>
+
+        <!-- Section 4: Before & After -->
+        <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; background: #ffffff;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.725rem; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 0.04em;">
+              <span>📷</span>
+              <span>BEFORE & AFTER</span>
+            </div>
+            <button type="button" id="modal-dossier-inspect-btn" style="background: none; border: none; font-size: 0.75rem; font-weight: 700; color: #059669; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem;">
+              <span>↗ Inspect Evidence</span>
+            </button>
+          </div>
+
+          <div id="modal-dossier-slider-box" class="comparison-slider-container" style="height: 220px; border-radius: 8px; position: relative; overflow: hidden; background: #0f172a; cursor: ew-resize; user-select: none;">
+            <!-- Before Layer (Full Width Underlying) -->
+            <div class="comparison-image-layer layer-before" style="position: absolute; inset: 0;">
+              <img id="modal-dossier-before-img" src="" style="width: 100%; height: 100%; object-fit: cover;" alt="before evidence" />
+              <span style="position: absolute; top: 10px; left: 10px; background: #ef4444; color: #ffffff; font-size: 0.7rem; font-weight: 700; padding: 3px 9px; border-radius: 9999px; z-index: 5;">
+                Before (1/1)
+              </span>
+            </div>
+
+            <!-- After Layer (Clipped / Resizable Overlay) -->
+            <div id="modal-dossier-after-layer" class="comparison-image-layer layer-after" style="position: absolute; inset: 0; width: 50%; overflow: hidden; border-right: 2px solid #ffffff; z-index: 3;">
+              <div id="modal-dossier-after-content" style="width: 100%; height: 100%; position: relative;">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Draggable Handle in Middle -->
+            <div id="modal-dossier-drag-handle" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 32px; height: 32px; border-radius: 50%; background: #ffffff; color: #059669; border: 2px solid #059669; display: flex; align-items: center; justify-content: center; z-index: 10; font-size: 0.75rem; font-weight: 900; box-shadow: 0 4px 10px rgba(0,0,0,0.3); pointer-events: none;">
+              ⬌
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; padding: 0.85rem 1.5rem; border-top: 1px solid #e2e8f0; background: #ffffff; border-radius: 0 0 16px 16px;">
+        <button type="button" id="complaint-dossier-modal-close-btn" class="pill-btn" style="padding: 0.45rem 1.35rem; font-size: 0.85rem; font-weight: 600; color: #334155; border: 1px solid #cbd5e1; background: #ffffff; border-radius: 8px; cursor: pointer;">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       Evidence & Resolution Comparison Modal (Exact User Screenshot Replica)
+       ==================================================================== -->
+  <div id="evidence-comparison-modal" class="slideover-backdrop">
+    <div class="admin-login-card" style="margin: auto; max-width: 960px; width: 95vw; border-radius: 16px; background: #ffffff; box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.35); overflow: hidden; display: flex; flex-direction: column;">
+      
+      <!-- Top Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+          <span id="evidence-modal-grv-id" style="font-family: monospace; font-weight: 800; font-size: 0.95rem; color: #0f172a; padding: 0.25rem 0.65rem; border: 1.5px solid #cbd5e1; border-radius: 6px; background: #f8fafc;">
+            GRV-2026-000201
+          </span>
+          <h2 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin: 0;">Evidence & Resolution Comparison</h2>
+        </div>
+        <button type="button" id="evidence-modal-close" style="width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid #0284c7; background: #ffffff; color: #0284c7; font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" title="Close modal">
+          ✕
+        </button>
+      </div>
+
+      <!-- Subheader Bar (Meta info & View switcher) -->
+      <div style="border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; background: #ffffff; flex-wrap: wrap; gap: 0.5rem;">
+        <div style="display: flex; align-items: center; gap: 1.25rem; font-size: 0.8125rem;">
+          <div style="display: flex; align-items: center; gap: 0.4rem; font-weight: 700; color: #0f172a;">
+            <span style="color: #16a34a;">🏢</span>
+            <span id="evidence-modal-dept">Street Lighting Department</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.4rem; color: #475569;">
+            <span>👤</span>
+            <span id="evidence-modal-citizen">Arpita Lande</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.4rem; color: #64748b;">
+            <span>📍</span>
+            <span id="evidence-modal-location">hdgffghy</span>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.4rem;">
+          <button type="button" id="evidence-btn-comparison" class="pill-btn active" style="font-size: 0.75rem; font-weight: 700; padding: 0.35rem 0.75rem; background: #ffffff; border: 1px solid #0f172a; color: #0f172a; border-radius: 6px;">
+            ☷ Comparison
+          </button>
+          <button type="button" id="evidence-btn-all-photos" class="pill-btn" style="font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b; border-radius: 6px;">
+            ⊞ All Photos (1)
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Body: Big Comparison Slider & Photos -->
+      <div style="padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; max-height: calc(85vh - 150px); overflow-y: auto;">
+        
+        <!-- Big Interactive Comparison Canvas (Using User Reference Component Design) -->
+        <div id="evidence-big-slider-box" role="region" aria-label="Before and after image comparison slider" style="position: relative; width: 100%; height: 380px; overflow: hidden; border-radius: 16px; background: #0f172a; border: 1px solid #cbd5e1; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); touch-action: none; cursor: ew-resize; user-select: none;">
+          <!-- 1. Background Layer: Cleaned (After) Image OR Smart Municipal In-Progress Pane -->
+          <div id="evidence-big-after-content" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden;">
+            <!-- Populated dynamically based on status -->
+          </div>
+
+          <!-- 2. Foreground Layer: Dirty (Before) Image with dynamic clip-path -->
+          <div id="evidence-foreground-layer" style="position: absolute; inset: 0; overflow: hidden; pointer-events: none; user-select: none; clip-path: inset(0 50% 0 0);">
+            <img id="evidence-big-before-img" src="" alt="Before comparison" style="width: 100%; height: 100%; object-fit: cover; user-select: none; pointer-events: none;" draggable="false" />
+            <span style="position: absolute; top: 12px; left: 14px; padding: 3px 10px; border-radius: 9999px; background: rgba(225, 29, 72, 0.95); color: #ffffff; font-size: 10px; font-weight: 900; letter-spacing: 0.025em; box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: none; z-index: 10;">
+              Before (1/1)
+            </span>
+            <span style="position: absolute; bottom: 12px; left: 14px; z-index: 10; padding: 2px 8px; border-radius: 9999px; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); color: #ffffff; font-size: 9.5px; font-weight: 700; pointer-events: none;">
+              📷 1 Photo
+            </span>
+          </div>
+
+          <!-- 3. Divider Line & Draggable Pill Handle (↔) -->
+          <div id="evidence-divider-line" style="position: absolute; top: 0; bottom: 0; left: 50%; margin-left: -1px; width: 2px; background: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 20;">
+            <div id="evidence-handle-button" role="slider" aria-label="Comparison slider position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" style="width: 30px; height: 30px; border-radius: 50%; background: #ffffff; border: 2px solid #10b981; color: #059669; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-size: 12px; font-weight: 900; pointer-events: auto; cursor: ew-resize;">
+              ↔
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Gallery Card (Citizen Photos vs Resolution Proofs) -->
+        <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; background: #ffffff; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <!-- Citizen Photos Column -->
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.65rem;">
+              <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; font-weight: 800; color: #0f172a;">
+                <span style="color: #ef4444;">●</span>
+                <span>Citizen Photos (1)</span>
+              </div>
+              <span style="font-size: 0.725rem; color: #94a3b8;">Click to compare</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <div id="evidence-thumb-citizen" style="width: 64px; height: 42px; border-radius: 8px; border: 2.5px solid #10b981; overflow: hidden; cursor: pointer; background: #0f172a;">
+                <img id="evidence-thumb-citizen-img" src="" style="width: 100%; height: 100%; object-fit: cover;" alt="citizen photo thumbnail" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Resolution Proofs Column -->
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; font-weight: 800; color: #0f172a; margin-bottom: 0.65rem;">
+              <span style="color: #10b981;">●</span>
+              <span id="evidence-proofs-header">Resolution Proofs (0)</span>
+            </div>
+            <div id="evidence-proofs-content">
+              <span style="font-size: 0.785rem; color: #94a3b8; font-style: italic;">
+                Resolution photo will appear once work is resolved on site.
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Bar -->
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1.5rem; border-top: 1px solid #e2e8f0; background: #ffffff; border-radius: 0 0 16px 16px;">
+        <div style="font-size: 0.8rem; color: #64748b;">
+          Resolution photo will appear once work is resolved on site.
+        </div>
+        <button type="button" id="evidence-modal-close-btn" class="pill-btn" style="padding: 0.45rem 1.35rem; font-size: 0.85rem; font-weight: 600; color: #334155; border: 1px solid #cbd5e1; background: #ffffff; border-radius: 8px; cursor: pointer;">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ====================================================================
        4. Reassign Department Modal
        ==================================================================== -->
   <div id="assign-modal" class="slideover-backdrop">

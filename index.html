@@ -613,6 +613,108 @@
     </div>
   </div>
 
+  <!-- ====================================================================
+       Citizen Dashboard Slide-Over Dossier Drawer (Exact Replica of User Reference)
+       ==================================================================== -->
+  <div id="citizen-dossier-backdrop" class="cd-backdrop"></div>
+  
+  <aside id="citizen-dossier-drawer" class="citizen-dossier-drawer" aria-label="Grievance dossier drawer">
+    
+    <!-- Top Action & Navigation Header -->
+    <div class="cd-drawer-header">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span id="cd-grievance-no" class="cd-badge-id">GRV-2026-000201</span>
+        <span id="cd-status-badge" class="cd-badge-status">● Pending</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.4rem;">
+        <div class="cd-nav-arrows-group">
+          <button type="button" id="cd-btn-prev" class="cd-icon-btn" title="Previous grievance">‹</button>
+          <button type="button" id="cd-btn-next" class="cd-icon-btn" title="Next grievance">›</button>
+        </div>
+        <button type="button" id="cd-btn-share" class="cd-icon-btn" title="Share grievance">
+          <svg style="width: 14px; height: 14px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+        </button>
+        <button type="button" id="cd-btn-close" class="cd-close-btn" title="Close drawer">✕</button>
+      </div>
+    </div>
+
+    <!-- Scrollable Drawer Content -->
+    <div class="cd-drawer-body">
+      
+      <!-- Issue Title & SLA Track -->
+      <div style="margin-bottom: 0.75rem;">
+        <h3 id="cd-issue-title" class="cd-title">Light not working</h3>
+        <div class="cd-sla-banner">
+          <span style="color: #ea580c;">🕒</span>
+          <span id="cd-sla-text" style="font-size: 0.8rem; font-weight: 700; color: #475569;">SLA Target: 24h</span>
+          <span style="color: #cbd5e1;">•</span>
+          <span id="cd-sla-status" style="font-size: 0.8rem; font-weight: 800; color: #059669;">100% On Track</span>
+        </div>
+      </div>
+
+      <!-- Before & After Interactive Slider (Matching User Reference Component) -->
+      <div id="cd-slider-box" class="cd-slider-container" role="region" aria-label="Before and after comparison slider" style="height: 240px; margin-bottom: 1.25rem;">
+        <!-- 1. Background Layer (After Image OR Smart Municipal In-Progress Pane) -->
+        <div id="cd-slider-after-content" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden;">
+          <!-- Injected dynamically -->
+        </div>
+
+        <!-- 2. Foreground Layer (Before Image with dynamic clip-path) -->
+        <div id="cd-foreground-layer" style="position: absolute; inset: 0; overflow: hidden; pointer-events: none; user-select: none; clip-path: inset(0 50% 0 0);">
+          <img id="cd-slider-before-img" src="" alt="Before comparison" style="width: 100%; height: 100%; object-fit: cover; user-select: none; pointer-events: none;" draggable="false" />
+          <span style="position: absolute; top: 10px; left: 10px; padding: 2px 9px; border-radius: 9999px; background: rgba(225, 29, 72, 0.95); color: #ffffff; font-size: 10px; font-weight: 900; letter-spacing: 0.025em; box-shadow: 0 4px 6px rgba(0,0,0,0.3); pointer-events: none; z-index: 10;">
+            Before
+          </span>
+        </div>
+
+        <!-- 3. Divider Line & Draggable Pill Handle (↔) -->
+        <div id="cd-divider-line" style="position: absolute; top: 0; bottom: 0; left: 50%; margin-left: -1px; width: 2px; background: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 20;">
+          <div id="cd-handle-button" role="slider" aria-label="Comparison slider position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" style="width: 28px; height: 28px; border-radius: 50%; background: #ffffff; border: 2px solid #10b981; color: #059669; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-size: 11px; font-weight: 900; pointer-events: auto; cursor: ew-resize;">
+            ↔
+          </div>
+        </div>
+      </div>
+
+      <!-- Resolution Timeline Card (Exact Screenshot Match) -->
+      <div class="cd-timeline-card">
+        <div class="cd-timeline-card-header">
+          <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.04em;">
+            <span style="color: #059669;">✨</span>
+            <span>RESOLUTION TIMELINE</span>
+          </div>
+          <span id="cd-timeline-progress-badge" class="cd-progress-pill">2/4 In Progress</span>
+        </div>
+
+        <!-- Vertical 4-Stage Stepper -->
+        <div id="cd-timeline-steps-container" class="cd-timeline-vertical">
+          <!-- Populated dynamically via js/citizen.js -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer Action Bar -->
+    <div class="cd-drawer-footer">
+      <button type="button" id="cd-btn-vote" class="cd-footer-btn-vote">
+        <span>✓</span>
+        <span id="cd-vote-label">0 Votes</span>
+      </button>
+
+      <button type="button" id="cd-btn-back" class="cd-footer-btn-back">
+        Back
+      </button>
+
+      <button type="button" id="cd-btn-report-similar" class="cd-footer-btn-report">
+        <span>Report Similar Issue</span>
+        <span>›</span>
+      </button>
+    </div>
+
+  </aside>
+
   <!-- Leaflet GIS Map JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <!-- Citizen App Engine -->

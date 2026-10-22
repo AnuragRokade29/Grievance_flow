@@ -430,7 +430,7 @@ function renderAllComplaintsTable() {
           </div>
         </td>
         <td style="text-align: center;">
-          <div style="display: inline-flex; align-items: center; justify-content: center; width: 68px; height: 38px; border-radius: 6px; overflow: hidden; border: 1px solid #cbd5e1; position: relative; background: #0f172a; cursor: pointer;" onclick="window.openWorkbenchForId('${c.id}')">
+          <div style="display: inline-flex; align-items: center; justify-content: center; width: 68px; height: 38px; border-radius: 6px; overflow: hidden; border: 1px solid #cbd5e1; position: relative; background: #0f172a; cursor: pointer;" onclick="window.openEvidenceComparisonModal('${c.id}')" title="Click to inspect full comparison evidence">
             <img src="${beforeImg}" style="width: 100%; height: 100%; object-fit: cover;" alt="evidence thumbnail" />
             <span style="position: absolute; bottom: 1px; left: 2px; font-size: 0.55rem; background: rgba(0,0,0,0.7); color: #fff; padding: 0 3px; border-radius: 2px;">Before</span>
           </div>
@@ -444,13 +444,410 @@ function renderAllComplaintsTable() {
           ${c.submittedDate || 'Oct 21, 2026'}
         </td>
         <td style="text-align: center;">
-          <button type="button" class="pill-btn" style="padding: 0.25rem 0.55rem;" title="Inspect in Workbench" onclick="window.openWorkbenchForId('${c.id}')">
-            ⚙️
+          <button type="button" class="pill-btn" style="padding: 0.25rem 0.55rem; color: #0284c7; border-color: #cbd5e1; font-size: 0.85rem;" title="View Complaint Record" onclick="window.openComplaintDossierModal('${c.id}')">
+            👁️
           </button>
         </td>
       </tr>
     `;
   }).join('');
+}
+
+let currentDossierComplaint = null;
+
+window.openComplaintDossierModal = function(id) {
+  const item = allComplaints.find(c => String(c.id) === String(id));
+  if (!item) return;
+
+  currentDossierComplaint = item;
+  activeWorkbenchComplaint = item;
+  const modal = document.getElementById('complaint-dossier-modal');
+  if (!modal) return;
+
+  // Grievance ID
+  const displayId = String(item.id).replace('#GRV-2026-', '').replace('GRV-2026-', '').replace('GRV-', '');
+  const displayGrievanceNo = item.grievanceNo || `GRV-2026-${String(displayId).padStart(6, '0')}`;
+  const idEl = document.getElementById('modal-dossier-id');
+  if (idEl) idEl.textContent = displayGrievanceNo;
+
+  // Status Badge
+  const statusEl = document.getElementById('modal-dossier-status');
+  const statusVal = item.status || 'Pending';
+  if (statusEl) {
+    if (statusVal === 'Resolved') {
+      statusEl.innerHTML = `✓ Resolved`;
+      statusEl.style.background = '#ecfdf5';
+      statusEl.style.color = '#047857';
+      statusEl.style.borderColor = '#a7f3d0';
+    } else if (statusVal === 'In Progress') {
+      statusEl.innerHTML = `⚡ In Progress`;
+      statusEl.style.background = '#eff6ff';
+      statusEl.style.color = '#1d4ed8';
+      statusEl.style.borderColor = '#bfdbfe';
+    } else {
+      statusEl.innerHTML = `🕒 Pending`;
+      statusEl.style.background = '#fef3c7';
+      statusEl.style.color = '#b45309';
+      statusEl.style.borderColor = '#fde68a';
+    }
+  }
+
+  // Department & Category
+  const deptEl = document.getElementById('modal-dossier-dept');
+  if (deptEl) deptEl.textContent = item.department || 'Municipal Administration';
+
+  const catEl = document.getElementById('modal-dossier-category');
+  if (catEl) catEl.textContent = item.category || 'Civic Issue';
+
+  // Citizen Contact
+  const citEl = document.getElementById('modal-dossier-citizen');
+  if (citEl) citEl.textContent = item.citizen || 'Citizen';
+
+  const mobEl = document.getElementById('modal-dossier-mobile');
+  if (mobEl) {
+    const rawMobile = String(item.mobile || '9022615919');
+    const masked = rawMobile.length >= 6 ? `${rawMobile.slice(0, 2)}****${rawMobile.slice(-4)}` : rawMobile;
+    mobEl.textContent = masked;
+  }
+
+  // Location / Landmark & Date
+  const locEl = document.getElementById('modal-dossier-location');
+  if (locEl) locEl.textContent = item.location || item.landmark || 'Amravati';
+
+  const dateEl = document.getElementById('modal-dossier-date');
+  if (dateEl) dateEl.textContent = item.submittedDate || 'Oct 21, 2026';
+
+  // Issue Description
+  const defaultDescMap = {
+    'Potholes': 'Severe potholes along the carriage way causing hazard to two-wheelers and vehicular traffic. Immediate resurfacing required.',
+    'Broken manhole': 'Damaged and broken manhole chamber on public road creating immediate safety hazard for pedestrians and traffic.',
+    'Light not working': 'The streetlight fixture on the pole is not functioning properly, causing darkness in the area. Please inspect and repair the light at the earliest.',
+    'Surface damage': 'Top bituminous road surface eroded due to heavy rains. Requires immediate patch repair work.',
+    'Waste burning': 'Open burning of municipal solid waste and dry leaves causing toxic smoke and air pollution in residential area.',
+    'Garbage dump overflow': 'Public garbage collection container overflowing onto road. Foul odor and health hazard for local residents.',
+    'Water pipeline leakage': 'Main municipal distribution pipeline leaking continuously leading to low pressure and potable water wastage.'
+  };
+  const desc = item.description || item.notes || defaultDescMap[item.category] || `Civic issue reported by citizen regarding ${item.category} under ${item.department}. Inspection and remedial action requested.`;
+  const descEl = document.getElementById('modal-dossier-desc');
+  if (descEl) descEl.textContent = desc;
+
+  // Before & After Images
+  const beforeImg = (item.images && item.images.before) || 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=800';
+  const beforeImgEl = document.getElementById('modal-dossier-before-img');
+  if (beforeImgEl) beforeImgEl.src = beforeImg;
+
+  const afterContent = document.getElementById('modal-dossier-after-content');
+  if (afterContent) {
+    if (statusVal === 'Resolved' && item.images && item.images.after) {
+      afterContent.innerHTML = `
+        <img src="${item.images.after}" style="width: 100%; height: 100%; object-fit: cover;" alt="after clearance" />
+        <span style="position: absolute; top: 10px; right: 10px; background: #059669; color: #ffffff; font-size: 0.7rem; font-weight: 700; padding: 3px 9px; border-radius: 9999px; z-index: 5;">
+          Resolved (1/1)
+        </span>
+      `;
+    } else {
+      afterContent.innerHTML = `
+        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #091322 0%, #0f172a 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+          <span style="position: absolute; top: 10px; right: 10px; background: #ea580c; color: #ffffff; font-size: 0.7rem; font-weight: 700; padding: 3px 9px; border-radius: 9999px; z-index: 5;">
+            Pending Fix
+          </span>
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.35rem; color: #94a3b8; font-size: 0.75rem;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); display: flex; align-items: center; justify-content: center; color: #10b981; font-size: 1rem;">
+              🔄
+            </div>
+            <strong style="color: #f8fafc; font-size: 0.8125rem;">In Progress</strong>
+            <span style="color: #64748b; font-size: 0.725rem;">Photo will appear once resolved</span>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // Reset comparison slider position to 50%
+  const afterLayer = document.getElementById('modal-dossier-after-layer');
+  const dragHandle = document.getElementById('modal-dossier-drag-handle');
+  if (afterLayer) afterLayer.style.width = '50%';
+  if (dragHandle) dragHandle.style.left = '50%';
+
+  modal.classList.add('open');
+};
+
+function setupComplaintDossierModal() {
+  const modal = document.getElementById('complaint-dossier-modal');
+  const closeBtn = document.getElementById('complaint-dossier-modal-close');
+  const footerCloseBtn = document.getElementById('complaint-dossier-modal-close-btn');
+  const inspectBtn = document.getElementById('modal-dossier-inspect-btn');
+
+  const closeModal = () => modal?.classList.remove('open');
+  closeBtn?.addEventListener('click', closeModal);
+  footerCloseBtn?.addEventListener('click', closeModal);
+
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  inspectBtn?.addEventListener('click', () => {
+    if (currentDossierComplaint) {
+      window.openEvidenceComparisonModal(currentDossierComplaint.id);
+    }
+  });
+
+  // Comparison slider interactive drag handler
+  const sliderBox = document.getElementById('modal-dossier-slider-box');
+  const afterLayer = document.getElementById('modal-dossier-after-layer');
+  const dragHandle = document.getElementById('modal-dossier-drag-handle');
+  let isDragging = false;
+
+  function updateSlider(clientX) {
+    if (!sliderBox || !afterLayer || !dragHandle) return;
+    const rect = sliderBox.getBoundingClientRect();
+    let posX = clientX - rect.left;
+    if (posX < 0) posX = 0;
+    if (posX > rect.width) posX = rect.width;
+    const pct = Math.max(5, Math.min(95, (posX / rect.width) * 100));
+    afterLayer.style.width = `${pct}%`;
+    dragHandle.style.left = `${pct}%`;
+  }
+
+  sliderBox?.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    updateSlider(e.clientX);
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (isDragging) updateSlider(e.clientX);
+  });
+
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  sliderBox?.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    if (e.touches[0]) updateSlider(e.touches[0].clientX);
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if (isDragging && e.touches[0]) updateSlider(e.touches[0].clientX);
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => {
+    isDragging = false;
+  });
+}
+
+// ============================================================================
+// Evidence & Resolution Comparison Modal (Shared by All Complaints & Workbench)
+// ============================================================================
+let currentEvidenceComplaint = null;
+
+function setEvidenceSliderPosition(percentage) {
+  const fg = document.getElementById('evidence-foreground-layer');
+  const line = document.getElementById('evidence-divider-line');
+  const btn = document.getElementById('evidence-handle-button');
+  const clamped = Math.max(0, Math.min(100, percentage));
+  if (fg) fg.style.clipPath = `inset(0 ${100 - clamped}% 0 0)`;
+  if (line) line.style.left = `${clamped}%`;
+  if (btn) btn.setAttribute('aria-valuenow', Math.round(clamped));
+}
+
+window.openEvidenceComparisonModal = function(id) {
+  const item = allComplaints.find(c => String(c.id) === String(id));
+  if (!item) return;
+
+  currentEvidenceComplaint = item;
+  const modal = document.getElementById('evidence-comparison-modal');
+  if (!modal) return;
+
+  // Header Grievance No
+  const displayId = String(item.id).replace('#GRV-2026-', '').replace('GRV-2026-', '').replace('GRV-', '');
+  const displayGrievanceNo = item.grievanceNo || `GRV-2026-${String(displayId).padStart(6, '0')}`;
+  const idEl = document.getElementById('evidence-modal-grv-id');
+  if (idEl) idEl.textContent = displayGrievanceNo;
+
+  // Subheader: Dept, Citizen, Location
+  const deptEl = document.getElementById('evidence-modal-dept');
+  if (deptEl) deptEl.textContent = item.department || 'Municipal Administration';
+
+  const citEl = document.getElementById('evidence-modal-citizen');
+  if (citEl) citEl.textContent = item.citizen || 'Citizen';
+
+  const locEl = document.getElementById('evidence-modal-location');
+  if (locEl) locEl.textContent = item.location || item.landmark || 'Amravati';
+
+  // Images
+  const validBefore = ((item.images && item.images.before) || '').trim() || 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=1200';
+  const validAfter = ((item.images && item.images.after) || '').trim();
+  const isResolved = item.status === 'Resolved';
+  const hasValidAfter = isResolved && validAfter && !validAfter.startsWith('placeholder:');
+
+  // Before Image
+  const beforeImgEl = document.getElementById('evidence-big-before-img');
+  if (beforeImgEl) beforeImgEl.src = validBefore;
+
+  const thumbCitImg = document.getElementById('evidence-thumb-citizen-img');
+  if (thumbCitImg) thumbCitImg.src = validBefore;
+
+  // Background / After Layer
+  const afterContentEl = document.getElementById('evidence-big-after-content');
+  const proofsHeader = document.getElementById('evidence-proofs-header');
+  const proofsContent = document.getElementById('evidence-proofs-content');
+
+  if (hasValidAfter) {
+    if (afterContentEl) {
+      afterContentEl.innerHTML = `
+        <img src="${validAfter}" alt="After comparison" style="width: 100%; height: 100%; object-fit: cover; user-select: none; pointer-events: none;" draggable="false" />
+        <span style="position: absolute; top: 12px; right: 14px; padding: 3px 10px; border-radius: 9999px; background: rgba(5, 150, 105, 0.9); color: #ffffff; font-size: 10px; font-weight: 900; letter-spacing: 0.025em; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 10; pointer-events: none;">
+          After (1/1)
+        </span>
+      `;
+    }
+    if (proofsHeader) proofsHeader.textContent = 'Resolution Proofs (1)';
+    if (proofsContent) {
+      proofsContent.innerHTML = `
+        <div style="width: 64px; height: 42px; border-radius: 8px; border: 2.5px solid #10b981; overflow: hidden; cursor: pointer; background: #0f172a;" onclick="setEvidenceSliderPosition(0)">
+          <img src="${validAfter}" style="width: 100%; height: 100%; object-fit: cover;" alt="resolution proof thumbnail" />
+        </div>
+      `;
+    }
+  } else {
+    // Smart Municipal In-Progress Pane (Matches user reference React component 1:1)
+    if (afterContentEl) {
+      afterContentEl.innerHTML = `
+        <div style="position: absolute; inset: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #091322 0%, #064e3b 50%, #091322 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.75rem; text-align: center; user-select: none; pointer-events: none;">
+          <div style="position: relative; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center;">
+            <span style="display: flex; width: 36px; height: 36px; align-items: center; justify-content: center; border-radius: 50%; background: rgba(16, 185, 129, 0.2); color: #34d399; position: relative;">
+              <span class="animate-ping" style="position: absolute; display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: #34d399; opacity: 0.75; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>
+              <svg style="width: 20px; height: 20px; position: relative; z-index: 2;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
+          </div>
+          <span style="font-size: 13px; font-weight: 900; color: #ffffff; letter-spacing: 0.025em;">Work In Progress</span>
+          <span style="font-size: 10px; font-weight: 500; color: rgba(110, 231, 183, 0.85); max-width: 180px; line-height: 1.3; margin-top: 2px;">
+            Resolution photo will appear once resolved
+          </span>
+        </div>
+        <span style="position: absolute; top: 12px; right: 14px; padding: 3px 10px; border-radius: 9999px; background: rgba(217, 119, 6, 0.9); color: #ffffff; font-size: 10px; font-weight: 900; letter-spacing: 0.025em; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 10; pointer-events: none;">
+          Pending Fix
+        </span>
+      `;
+    }
+    if (proofsHeader) proofsHeader.textContent = 'Resolution Proofs (0)';
+    if (proofsContent) {
+      proofsContent.innerHTML = `
+        <span style="font-size: 0.785rem; color: #94a3b8; font-style: italic;">
+          Resolution photo will appear once work is resolved on site.
+        </span>
+      `;
+    }
+  }
+
+  // Reset slider position to 50%
+  setEvidenceSliderPosition(50);
+
+  modal.classList.add('open');
+};
+
+function setupEvidenceComparisonModal() {
+  const modal = document.getElementById('evidence-comparison-modal');
+  const closeBtn = document.getElementById('evidence-modal-close');
+  const footerCloseBtn = document.getElementById('evidence-modal-close-btn');
+
+  const closeModal = () => modal?.classList.remove('open');
+  closeBtn?.addEventListener('click', closeModal);
+  footerCloseBtn?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Slider container drag handling (mouse + touch)
+  const container = document.getElementById('evidence-big-slider-box');
+  let isDragging = false;
+
+  const handleSliderMove = (clientX) => {
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    if (rect.width === 0) return;
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    setEvidenceSliderPosition(percentage);
+  };
+
+  container?.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    handleSliderMove(e.clientX);
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (isDragging) handleSliderMove(e.clientX);
+  });
+
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  container?.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    if (e.touches[0]) handleSliderMove(e.touches[0].clientX);
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if (isDragging && e.touches[0]) handleSliderMove(e.touches[0].clientX);
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => {
+    isDragging = false;
+  });
+
+  // Keyboard navigation
+  container?.setAttribute('tabindex', '0');
+  container?.addEventListener('keydown', (e) => {
+    const btn = document.getElementById('evidence-handle-button');
+    const currentPos = btn ? parseFloat(btn.getAttribute('aria-valuenow') || '50') : 50;
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      setEvidenceSliderPosition(Math.max(0, currentPos - 5));
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      setEvidenceSliderPosition(Math.min(100, currentPos + 5));
+    }
+  });
+
+  // Thumbnails in gallery
+  document.getElementById('evidence-thumb-citizen')?.addEventListener('click', () => {
+    setEvidenceSliderPosition(100); // Reveals full before image
+  });
+
+  // View switch buttons
+  const btnComp = document.getElementById('evidence-btn-comparison');
+  const btnAll = document.getElementById('evidence-btn-all-photos');
+  btnComp?.addEventListener('click', () => {
+    btnComp.classList.add('active');
+    btnComp.style.background = '#ffffff';
+    btnComp.style.color = '#0f172a';
+    btnComp.style.borderColor = '#0f172a';
+    if (btnAll) {
+      btnAll.classList.remove('active');
+      btnAll.style.background = '#f8fafc';
+      btnAll.style.color = '#64748b';
+      btnAll.style.borderColor = '#e2e8f0';
+    }
+    setEvidenceSliderPosition(50);
+  });
+  btnAll?.addEventListener('click', () => {
+    btnAll?.classList.add('active');
+    btnAll.style.background = '#ffffff';
+    btnAll.style.color = '#0f172a';
+    btnAll.style.borderColor = '#0f172a';
+    if (btnComp) {
+      btnComp.classList.remove('active');
+      btnComp.style.background = '#f8fafc';
+      btnComp.style.color = '#64748b';
+      btnComp.style.borderColor = '#e2e8f0';
+    }
+    setEvidenceSliderPosition(100);
+  });
 }
 
 window.openWorkbenchForId = function(id) {
@@ -461,7 +858,10 @@ window.openWorkbenchForId = function(id) {
   switchAdminScreen('workbench');
   setTimeout(() => {
     const row = document.getElementById(`wb-drawer-${item.id}`);
-    if (row) row.style.display = 'table-row';
+    if (row) {
+      row.style.display = 'table-row';
+      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
     const chevron = document.getElementById(`wb-chevron-${item.id}`);
     if (chevron) chevron.textContent = '▼';
     showToast(`Opened ${item.grievanceNo} in Workbench`, 'info');
@@ -602,7 +1002,7 @@ function renderWorkbenchAccordionTable() {
           <div style="font-size: 0.675rem; color: #94a3b8;">${c.submittedDate || 'Oct 21, 2026'}</div>
         </td>
         <td style="text-align: center;">
-          <div style="display: inline-flex; width: 64px; height: 38px; border-radius: 6px; overflow: hidden; border: 1px solid #cbd5e1; background: #0f172a;">
+          <div style="display: inline-flex; width: 64px; height: 38px; border-radius: 6px; overflow: hidden; border: 1px solid #cbd5e1; background: #0f172a; cursor: pointer;" onclick="event.stopPropagation(); window.openEvidenceComparisonModal('${c.id}')" title="Inspect Evidence & Resolution Comparison">
             <img src="${beforeImg}" style="width: 100%; height: 100%; object-fit: cover;" alt="evidence thumbnail" />
           </div>
         </td>
@@ -675,7 +1075,7 @@ function renderWorkbenchAccordionTable() {
             </div>
 
             <!-- Evidence Comparison Box -->
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.85rem 1rem; display: flex; align-items: center; justify-content: space-between;">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.85rem 1rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer;" onclick="event.stopPropagation(); window.openEvidenceComparisonModal('${c.id}')" title="Click to view full comparison evidence">
               <div style="display: flex; align-items: center; gap: 1rem;">
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                   <div style="width: 50px; height: 32px; border-radius: 4px; overflow: hidden; border: 1px solid #cbd5e1;">
@@ -694,6 +1094,7 @@ function renderWorkbenchAccordionTable() {
 
               <div style="font-size: 0.75rem; color: #64748b;">
                 Reporting Citizen: <strong style="color: #0f172a;">${c.citizen || 'Tanvi'}</strong> (📞 ${c.mobile || '9022615919'})
+                <span style="margin-left: 0.5rem; color: #059669; font-weight: 700;">↗ Open Big View</span>
               </div>
             </div>
           </div>
@@ -1684,6 +2085,9 @@ window.deleteDept = function(id) {
 // 9. Reassignment & Resolution Modals
 // ============================================================================
 function setupModals() {
+  setupComplaintDossierModal();
+  setupEvidenceComparisonModal();
+
   // Reassign Modal
   const assignModal = document.getElementById('assign-modal');
   const assignForm = document.getElementById('assign-form');
