@@ -304,85 +304,149 @@
             <!-- Detail Main Card -->
             <div class="ticket-timeline-card">
               
-              <!-- Before & After Section -->
+              <!-- Before & After Section (Matching Screenshot 1) -->
               <div class="before-after-box">
                 <div class="ba-left-thumb">
-                  <span style="font-size: 0.8125rem; font-weight: 700; color: #475569;">📷 Before & After</span>
-                  <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
-                    <span style="font-size: 0.7rem; font-weight: 800; color: #dc2626;">BEFORE:</span>
+                  <div class="ba-camera-badge">
+                    <span>📷</span>
+                    <span>Before & After</span>
+                  </div>
+                  <div class="ba-thumb-wrap">
+                    <span class="ba-label-before">BEFORE:</span>
                     <img id="detail-before-img" src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=500" alt="Before repair" />
                   </div>
                 </div>
 
-                <div style="display: flex; align-items: center; gap: 1.25rem;">
-                  <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span style="font-size: 0.7rem; font-weight: 800; color: #64748b;">STATUS:</span>
-                    <div class="ba-status-tag">
-                      <span style="color: #f59e0b;">⏰</span>
-                      <div>
-                        <div style="font-weight: 700; font-size: 0.75rem;">Pending Fix</div>
-                        <div style="font-size: 0.65rem; color: #94a3b8;">Work in progress on site</div>
+                <div class="ba-right-status-group">
+                  <div class="ba-status-row">
+                    <span class="ba-status-label">STATUS:</span>
+                    <div id="detail-ba-status-pill" class="ba-status-pill-dark">
+                      <span class="ba-clock-icon">⏰</span>
+                      <div class="ba-status-text-col">
+                        <div id="detail-ba-status-title" class="ba-status-title">Pending Fix</div>
+                        <div id="detail-ba-status-sub" class="ba-status-sub">Work in progress on site</div>
                       </div>
                     </div>
                   </div>
 
-                  <a href="#" class="ba-inspect-link">Inspect Evidence →</a>
+                  <button type="button" id="track-btn-inspect-evidence" class="ba-inspect-btn">
+                    <span>Inspect Evidence</span>
+                    <span>→</span>
+                  </button>
                 </div>
               </div>
 
-              <!-- Two-Column Flow (Citizen vs Officer) -->
+              <!-- Two-Column Flow (Citizen vs Officer with Center Spine - Matching Screenshot 1) -->
               <div class="timeline-two-column-flow">
                 
                 <div class="timeline-flow-header-roles">
-                  <span>👤 Citizen</span>
-                  <span>👮 Officer</span>
+                  <div class="role-header-col role-citizen">
+                    <span>👤</span>
+                    <span>Citizen</span>
+                  </div>
+                  <div class="role-header-spine-spacer"></div>
+                  <div class="role-header-col role-officer">
+                    <span style="color: #2563eb;">🛡️</span>
+                    <span>Officer</span>
+                  </div>
                 </div>
 
-                <div class="flow-grid-container">
-                  
-                  <!-- Citizen Side Step 1 -->
-                  <div class="flow-citizen-card">
-                    <span style="font-size: 1.5rem; color: #00875a;">📄</span>
-                    <div>
-                      <div style="font-weight: 800; font-size: 0.875rem; color: #0f172a;">Pending</div>
-                      <div style="font-size: 0.75rem; color: #64748b;" id="flow-card-defect">Potholes</div>
-                      <div style="font-size: 0.7rem; color: #94a3b8; margin-top: 0.2rem;" id="flow-card-date">17 Oct 2026, 02:33 pm</div>
+                <div class="timeline-spine-wrapper">
+                  <!-- Continuous Vertical Center Spine Line -->
+                  <div class="timeline-vertical-spine-line"></div>
+
+                  <!-- ROW 1: Citizen Submission (Step 1) -->
+                  <div class="timeline-step-row citizen-row" id="track-step-row-1">
+                    <div class="timeline-card-cell left-cell">
+                      <div class="flow-citizen-card">
+                        <div class="flow-card-icon-box">
+                          <span style="font-size: 1.35rem; color: #059669;">📄</span>
+                        </div>
+                        <div class="flow-card-body">
+                          <h4 id="flow-card-status-1">Pending</h4>
+                          <div id="flow-card-defect">Potholes</div>
+                          <div class="flow-card-time" id="flow-card-date">17 Oct 2026, 02:33 pm</div>
+                        </div>
+                      </div>
+                      <div class="timeline-connector-branch right-branch" id="track-branch-1"></div>
+                    </div>
+
+                    <div class="timeline-node-cell">
+                      <div class="timeline-spine-node done" id="track-node-1">
+                        <span>✓</span>
+                      </div>
+                    </div>
+
+                    <div class="timeline-card-cell right-cell empty-cell"></div>
+                  </div>
+
+                  <!-- ROW 2: Field Unit Assigned (Step 2) -->
+                  <div class="timeline-step-row officer-row" id="track-step-row-2">
+                    <div class="timeline-card-cell left-cell empty-cell"></div>
+
+                    <div class="timeline-node-cell">
+                      <div class="timeline-spine-node" id="track-node-2">
+                        <span class="node-inner-dot"></span>
+                      </div>
+                    </div>
+
+                    <div class="timeline-card-cell right-cell">
+                      <div class="timeline-connector-branch left-branch" id="track-branch-2"></div>
+                      <div class="officer-step-card" id="track-card-2">
+                        <div class="officer-card-header">
+                          <span class="officer-icon-badge" style="color: #2563eb;">👤</span>
+                          <h5 id="flow-card-status-2">Assigned</h5>
+                        </div>
+                        <p id="flow-card-sub-2">We will assign an officer soon.</p>
+                      </div>
                     </div>
                   </div>
 
-                  <!-- Central Connector Node -->
-                  <div class="flow-node-center">✓</div>
+                  <!-- ROW 3: Under Review & Squad Inspection (Step 3) -->
+                  <div class="timeline-step-row officer-row" id="track-step-row-3">
+                    <div class="timeline-card-cell left-cell empty-cell"></div>
 
-                  <!-- Officer Side Steps 2, 3, 4 -->
-                  <div class="flow-officer-steps">
-                    
-                    <div class="officer-step-item">
-                      <div style="display: flex; align-items: center; gap: 0.4rem;">
-                        <span style="font-size: 1rem; color: #2563eb;">👤</span>
-                        <h5>Assigned</h5>
+                    <div class="timeline-node-cell">
+                      <div class="timeline-spine-node" id="track-node-3">
+                        <span class="node-inner-dot"></span>
                       </div>
-                      <p>We will assign an officer soon.</p>
                     </div>
 
-                    <div class="officer-step-item">
-                      <div style="display: flex; align-items: center; gap: 0.4rem;">
-                        <span style="font-size: 1rem; color: #f59e0b;">🔧</span>
-                        <h5>Under Review</h5>
-                      </div>
-                      <p>A large and deep pothole has formed on the road surface, which is filled with stagnant water and poses safety risks...</p>
-                    </div>
-
-                    <div class="officer-step-item" style="border-style: dashed; opacity: 0.75;">
-                      <div style="display: flex; align-items: center; justify-content: space-between;">
-                        <div style="display: flex; align-items: center; gap: 0.4rem;">
-                          <span style="font-size: 1rem; color: #94a3b8;">⭕</span>
-                          <h5>Resolved</h5>
+                    <div class="timeline-card-cell right-cell">
+                      <div class="timeline-connector-branch left-branch" id="track-branch-3"></div>
+                      <div class="officer-step-card" id="track-card-3">
+                        <div class="officer-card-header">
+                          <span class="officer-icon-badge" style="color: #f59e0b;">🔧</span>
+                          <h5 id="flow-card-status-3">Under Review</h5>
                         </div>
-                        <span style="font-size: 0.65rem; background: #e2e8f0; color: #475569; padding: 0.1rem 0.4rem; border-radius: 4px;">Upcoming</span>
+                        <p id="flow-card-sub-3">A large and deep pothole has formed on the road surface, which is filled with stagnant water and poses safety risks...</p>
                       </div>
-                      <p>Expected after on-site repair is completed and photo verification is filed.</p>
+                    </div>
+                  </div>
+
+                  <!-- ROW 4: Verified & Resolved (Step 4) -->
+                  <div class="timeline-step-row officer-row" id="track-step-row-4">
+                    <div class="timeline-card-cell left-cell empty-cell"></div>
+
+                    <div class="timeline-node-cell">
+                      <div class="timeline-spine-node" id="track-node-4">
+                        <span class="node-inner-dot"></span>
+                      </div>
                     </div>
 
+                    <div class="timeline-card-cell right-cell">
+                      <div class="timeline-connector-branch left-branch" id="track-branch-4"></div>
+                      <div class="officer-step-card resolved-card" id="track-card-4">
+                        <div class="officer-card-header" style="justify-content: space-between;">
+                          <div style="display: flex; align-items: center; gap: 0.45rem;">
+                            <span class="officer-icon-badge" style="color: #94a3b8;">🕒</span>
+                            <h5 id="flow-card-status-4">Resolved</h5>
+                          </div>
+                          <span id="flow-card-badge-4" class="upcoming-badge">Upcoming</span>
+                        </div>
+                        <p id="flow-card-sub-4">Officer will share work details and photos.</p>
+                      </div>
+                    </div>
                   </div>
 
                 </div>

@@ -311,22 +311,142 @@ function renderTicketList() {
       selectedTicketToken = token;
       const item = combined.find(t => t.token === token);
       if (item) {
-        document.getElementById('detail-ticket-title').textContent = item.title;
-        document.getElementById('detail-ticket-token').textContent = item.token;
-        document.getElementById('detail-ticket-dept').textContent = item.department;
-        document.getElementById('detail-ticket-location').textContent = item.location;
-        document.getElementById('detail-ticket-date').textContent = item.date;
-
-        const defectEl = document.getElementById('flow-card-defect');
-        const dateEl = document.getElementById('flow-card-date');
-        if (defectEl) defectEl.textContent = item.title;
-        if (dateEl) dateEl.textContent = item.date;
-
-        const img = document.getElementById('detail-before-img');
-        if (img) img.src = item.photo;
+        updateLiveTrackerDetail(item);
       }
     });
   });
+
+  // Ensure initial ticket timeline is fully populated
+  const initialItem = combined.find(t => t.token === selectedTicketToken) || combined[0];
+  if (initialItem) {
+    updateLiveTrackerDetail(initialItem);
+  }
+}
+
+function updateLiveTrackerDetail(item) {
+  if (!item) return;
+
+  // Header meta
+  const titleEl = document.getElementById('detail-ticket-title');
+  const tokenEl = document.getElementById('detail-ticket-token');
+  const deptEl = document.getElementById('detail-ticket-dept');
+  const locEl = document.getElementById('detail-ticket-location');
+  const dateEl = document.getElementById('detail-ticket-date');
+
+  if (titleEl) titleEl.textContent = item.title;
+  if (tokenEl) tokenEl.textContent = item.token;
+  if (deptEl) deptEl.textContent = item.department;
+  if (locEl) locEl.textContent = item.location;
+  if (dateEl) dateEl.textContent = item.date;
+
+  // Before & After evidence box
+  const imgEl = document.getElementById('detail-before-img');
+  if (imgEl && item.photo) imgEl.src = item.photo;
+
+  const baStatusTitle = document.getElementById('detail-ba-status-title');
+  const baStatusSub = document.getElementById('detail-ba-status-sub');
+  const isResolved = item.status === 'Resolved';
+  const isInProgress = item.status === 'In Progress';
+
+  if (baStatusTitle && baStatusSub) {
+    if (isResolved) {
+      baStatusTitle.textContent = 'Resolved';
+      baStatusTitle.style.color = '#10b981';
+      baStatusSub.textContent = 'Work verified & closed by AMC';
+    } else if (isInProgress) {
+      baStatusTitle.textContent = 'In Progress';
+      baStatusTitle.style.color = '#38bdf8';
+      baStatusSub.textContent = 'Field squad deployed on site';
+    } else {
+      baStatusTitle.textContent = 'Pending Fix';
+      baStatusTitle.style.color = '#f59e0b';
+      baStatusSub.textContent = 'Work in progress on site';
+    }
+  }
+
+  // Row 1: Citizen Submission
+  const flowDefect = document.getElementById('flow-card-defect');
+  const flowDate = document.getElementById('flow-card-date');
+  if (flowDefect) flowDefect.textContent = item.title;
+  if (flowDate) flowDate.textContent = item.date;
+
+  // Row 2: Field Unit Assigned
+  const node2 = document.getElementById('track-node-2');
+  const branch2 = document.getElementById('track-branch-2');
+  const sub2 = document.getElementById('flow-card-sub-2');
+  if (isResolved || isInProgress) {
+    if (node2) {
+      node2.className = 'timeline-spine-node done';
+      node2.innerHTML = '<span>✓</span>';
+    }
+    if (branch2) branch2.className = 'timeline-connector-branch left-branch done';
+    if (sub2) sub2.textContent = `Assigned to ${item.department} Squad.`;
+  } else {
+    if (node2) {
+      node2.className = 'timeline-spine-node';
+      node2.innerHTML = '<span class="node-inner-dot"></span>';
+    }
+    if (branch2) branch2.className = 'timeline-connector-branch left-branch';
+    if (sub2) sub2.textContent = 'We will assign an officer soon.';
+  }
+
+  // Row 3: Under Review & Inspection
+  const node3 = document.getElementById('track-node-3');
+  const branch3 = document.getElementById('track-branch-3');
+  const sub3 = document.getElementById('flow-card-sub-3');
+  if (isResolved) {
+    if (node3) {
+      node3.className = 'timeline-spine-node done';
+      node3.innerHTML = '<span>✓</span>';
+    }
+    if (branch3) branch3.className = 'timeline-connector-branch left-branch done';
+    if (sub3) sub3.textContent = 'Physical repair and asphalt restoration completed on site.';
+  } else if (isInProgress) {
+    if (node3) {
+      node3.className = 'timeline-spine-node active';
+      node3.innerHTML = '<span class="node-inner-dot"></span>';
+    }
+    if (branch3) branch3.className = 'timeline-connector-branch left-branch';
+    if (sub3) sub3.textContent = 'Field squad currently on site addressing the reported defect.';
+  } else {
+    if (node3) {
+      node3.className = 'timeline-spine-node';
+      node3.innerHTML = '<span class="node-inner-dot"></span>';
+    }
+    if (branch3) branch3.className = 'timeline-connector-branch left-branch';
+    if (sub3) sub3.textContent = 'A large and deep pothole has formed on the road surface, which is filled with stagnant water and poses safety risks...';
+  }
+
+  // Row 4: Verified & Resolved
+  const node4 = document.getElementById('track-node-4');
+  const branch4 = document.getElementById('track-branch-4');
+  const badge4 = document.getElementById('flow-card-badge-4');
+  const sub4 = document.getElementById('flow-card-sub-4');
+  if (isResolved) {
+    if (node4) {
+      node4.className = 'timeline-spine-node done';
+      node4.innerHTML = '<span>✓</span>';
+    }
+    if (branch4) branch4.className = 'timeline-connector-branch left-branch done';
+    if (badge4) {
+      badge4.textContent = 'Closed';
+      badge4.style.background = '#ecfdf5';
+      badge4.style.color = '#047857';
+    }
+    if (sub4) sub4.textContent = 'Inspected and before/after verification recorded by municipal engineer.';
+  } else {
+    if (node4) {
+      node4.className = 'timeline-spine-node';
+      node4.innerHTML = '<span class="node-inner-dot"></span>';
+    }
+    if (branch4) branch4.className = 'timeline-connector-branch left-branch';
+    if (badge4) {
+      badge4.textContent = 'Upcoming';
+      badge4.style.background = '#f1f5f9';
+      badge4.style.color = '#475569';
+    }
+    if (sub4) sub4.textContent = 'Officer will share work details and photos.';
+  }
 }
 
 function setupTicketFilters() {
@@ -352,6 +472,15 @@ function setupTicketActionButtons() {
   const btnDelete = document.getElementById('btn-delete-grievance');
   const btnShare = document.getElementById('btn-share-grievance');
   const btnNew = document.getElementById('tickets-new-btn');
+  const btnInspect = document.getElementById('track-btn-inspect-evidence');
+
+  if (btnInspect) {
+    btnInspect.addEventListener('click', (e) => {
+      e.preventDefault();
+      const clean = String(selectedTicketToken || '').replace(/^#/, '');
+      openCitizenDossier(clean);
+    });
+  }
 
   if (btnEdit) {
     btnEdit.addEventListener('click', () => {
