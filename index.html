@@ -2,9 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Amravati Municipal Corporation • Public Grievance Redressal Department</title>
   <meta name="description" content="Official Civic Grievance Redressal Portal for Amravati Municipal Corporation (AMC). File complaints, track status on live GIS map." />
+
+  <!-- PWA & Mobile Web App Meta -->
+  <meta name="theme-color" content="#059669" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="AMC Grievance" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png" />
+
+  <!-- Modern Normalize CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/2.0.0/modern-normalize.min.css" />
+
+  <!-- Font Awesome 6 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <!-- Fonts with Marathi Devanagari support -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -30,15 +47,22 @@
     <div class="amc-brand">
       <div class="amc-logo-circle">AMC</div>
       <div class="amc-titles">
-        <h1 data-i18n="portalTitle">Amravati Municipal Corporation</h1>
+        <h1 data-i18n="portalTitle"><span class="desktop-only-text">Amravati Municipal Corporation</span><span class="mobile-only-text">AMC Amravati</span></h1>
         <p>
           <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
-          <span data-i18n="portalSubtitle">Public Grievance Redressal Department</span>
+          <span class="desktop-only-text" data-i18n="portalSubtitle">Public Grievance Redressal Department</span>
+          <span class="mobile-only-text">Grievance Portal</span>
         </p>
       </div>
     </div>
 
     <div class="amc-header-actions">
+      <!-- PWA Install Trigger -->
+      <button type="button" id="header-pwa-install-btn" class="pill-btn pill-btn-pwa" onclick="window.triggerPwaInstall && window.triggerPwaInstall()" title="Install AMC Grievance App">
+        <i class="fa-solid fa-cloud-arrow-down" style="color: #059669;"></i>
+        <span class="pwa-header-label">Install App</span>
+      </button>
+
       <button type="button" id="header-home-btn" class="pill-btn pill-btn-home">
         <span>🏠</span>
         <span data-i18n="homeBtn">Home</span>
@@ -197,12 +221,19 @@
 
           <div class="map-top-overlay">
             <div class="map-filters-left">
+              <span class="ward-icon-pin" style="color: #ef4444; font-size: 0.85rem; margin-left: 2px;">📍</span>
               <select id="map-ward-select" class="ward-filter-select">
-                <option value="">● All Wards</option>
+                <option value="">All Wards</option>
               </select>
               <button type="button" class="filter-pill active" data-filter="all">All</button>
-              <button type="button" class="filter-pill" data-filter="dirty"><span class="dot-red"></span> Dirty</button>
-              <button type="button" class="filter-pill" data-filter="cleaned"><span class="dot-green"></span> Cleaned</button>
+              <button type="button" class="filter-pill filter-pill-dot" data-filter="dirty" title="Dirty">
+                <span class="dot-red"></span>
+                <span class="pill-dot-text">Dirty</span>
+              </button>
+              <button type="button" class="filter-pill filter-pill-dot" data-filter="cleaned" title="Cleaned">
+                <span class="dot-green"></span>
+                <span class="pill-dot-text">Cleaned</span>
+              </button>
             </div>
             <div>
               <button type="button" id="map-report-btn" class="btn-report-grievance">
@@ -250,53 +281,62 @@
           </div>
 
           <!-- Right Area: Selected Ticket Detail & Two-Column Stepper -->
-          <div class="track-ticket-detail-pane">
+          <div class="track-ticket-detail-pane" id="track-ticket-detail-pane">
             
-            <!-- Top Bar: Title & Action Buttons -->
-            <div class="ticket-detail-top-bar">
-              <div class="ticket-title-group">
-                <h2 id="detail-ticket-title">Potholes</h2>
+            <!-- Mobile Slide-Up Sheet Top Drag Handle -->
+            <div class="sheet-drag-handle"></div>
+
+            <!-- Top Action Bar (Exact Image 2 Match) -->
+            <div class="ticket-sheet-top-action-bar">
+              <button type="button" id="mobile-back-to-tickets-btn" class="sheet-btn-back">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Back</span>
+              </button>
+
+              <div class="sheet-right-action-group">
+                <button type="button" id="btn-edit-grievance" class="sheet-btn-edit">
+                  <i class="fa-solid fa-pen"></i>
+                  <span>Edit Grievance</span>
+                </button>
+
+                <button type="button" id="btn-delete-grievance" class="sheet-btn-icon sheet-btn-delete" title="Delete Grievance">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+
+                <button type="button" id="btn-share-grievance" class="sheet-btn-icon sheet-btn-share" title="Share Tracking Link">
+                  <i class="fa-solid fa-share-nodes"></i>
+                </button>
+
+                <button type="button" id="sheet-close-btn" class="sheet-btn-close" aria-label="Close">
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            <!-- Ticket Title & Status Header Row -->
+            <div class="ticket-detail-title-row">
+              <div class="ticket-title-wrap">
+                <h2 id="detail-ticket-title">Waterlogging</h2>
                 <div class="meta-line">
-                  <strong id="detail-ticket-token">#GRV-2026-000175</strong>
+                  <strong id="detail-ticket-token">#GRV-2026-000202</strong>
                   <span>•</span>
-                  <span id="detail-ticket-dept">Road Maintenance Department</span>
+                  <span id="detail-ticket-dept">Sewerage & Drainage Department</span>
                   <span>•</span>
-                  <span id="detail-ticket-location">Camp Main Road</span>
-                  <span>•</span>
-                  <span id="detail-ticket-date">17 Oct 2026, 02:33 pm</span>
+                  <span id="detail-ticket-date">22 Oct 2026, 01:19 pm</span>
+                  <span id="detail-ticket-location" style="display: none;">Camp Main Road</span>
                 </div>
               </div>
-
-              <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <span class="status-tag-pending">● PENDING</span>
-                
-                <div class="ticket-action-btns">
-                  <button type="button" id="btn-edit-grievance" class="btn-edit-grv">
-                    <span>✏️</span>
-                    <span>Edit Grievance</span>
-                  </button>
-
-                  <button type="button" id="btn-delete-grievance" class="btn-delete-grv">
-                    <span>🗑️</span>
-                    <span>Delete Grievance</span>
-                  </button>
-
-                  <button type="button" id="btn-share-grievance" class="btn-share-grv">
-                    <span>🔗</span>
-                    <span>Share</span>
-                  </button>
-                </div>
-              </div>
+              <span id="detail-status-pill-top" class="status-tag-pending">● PENDING</span>
             </div>
 
             <!-- Sub tabs: Live Timeline / Officers & Squad -->
             <div class="ticket-sub-tabs">
               <div class="sub-tab-item active">
-                <span>✓</span>
+                <i class="fa-solid fa-check"></i>
                 <span>Live Timeline</span>
               </div>
               <div class="sub-tab-item">
-                <span>👥</span>
+                <i class="fa-solid fa-users"></i>
                 <span>Officers & Squad</span>
               </div>
             </div>
@@ -304,22 +344,32 @@
             <!-- Detail Main Card -->
             <div class="ticket-timeline-card">
               
-              <!-- Before & After Section (Matching Screenshot 1) -->
+              <!-- Before & After Card (Exact Image 2 Match) -->
               <div class="before-after-box">
-                <div class="ba-left-thumb">
-                  <div class="ba-camera-badge">
-                    <span>📷</span>
+                <div class="ba-card-top-bar">
+                  <div class="ba-card-title-left">
+                    <i class="fa-solid fa-camera" style="color: #059669;"></i>
                     <span>Before & After</span>
                   </div>
-                  <div class="ba-thumb-wrap">
-                    <span class="ba-label-before">BEFORE:</span>
-                    <img id="detail-before-img" src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=500" alt="Before repair" />
-                  </div>
+                  <button type="button" id="track-btn-inspect-evidence" class="ba-inspect-link">
+                    <span>Inspect Evidence</span>
+                    <span>→</span>
+                  </button>
                 </div>
 
-                <div class="ba-right-status-group">
-                  <div class="ba-status-row">
-                    <span class="ba-status-label">STATUS:</span>
+                <div class="ba-card-body-content">
+                  <div class="ba-row-item">
+                    <span class="ba-label-tag">BEFORE:</span>
+                    <div class="ba-thumb-container">
+                      <div id="detail-no-photo-box" class="ba-dashed-empty-box" style="display: none;">
+                        <i class="fa-regular fa-image"></i>
+                      </div>
+                      <img id="detail-before-img" src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=500" alt="Before repair" />
+                    </div>
+                  </div>
+
+                  <div class="ba-row-item" style="margin-top: 0.5rem;">
+                    <span class="ba-label-tag">STATUS:</span>
                     <div id="detail-ba-status-pill" class="ba-status-pill-dark">
                       <span class="ba-clock-icon">⏰</span>
                       <div class="ba-status-text-col">
@@ -328,11 +378,6 @@
                       </div>
                     </div>
                   </div>
-
-                  <button type="button" id="track-btn-inspect-evidence" class="ba-inspect-btn">
-                    <span>Inspect Evidence</span>
-                    <span>→</span>
-                  </button>
                 </div>
               </div>
 
@@ -364,8 +409,8 @@
                         </div>
                         <div class="flow-card-body">
                           <h4 id="flow-card-status-1">Pending</h4>
-                          <div id="flow-card-defect">Potholes</div>
-                          <div class="flow-card-time" id="flow-card-date">17 Oct 2026, 02:33 pm</div>
+                          <div id="flow-card-defect">Waterlogging</div>
+                          <div class="flow-card-time" id="flow-card-date">22 Oct 2026, 01:19 pm</div>
                         </div>
                       </div>
                       <div class="timeline-connector-branch right-branch" id="track-branch-1"></div>
@@ -419,7 +464,7 @@
                           <span class="officer-icon-badge" style="color: #f59e0b;">🔧</span>
                           <h5 id="flow-card-status-3">Under Review</h5>
                         </div>
-                        <p id="flow-card-sub-3">A large and deep pothole has formed on the road surface, which is filled with stagnant water and poses safety risks...</p>
+                        <p id="flow-card-sub-3">There is severe waterlogging on the road, causing...</p>
                       </div>
                     </div>
                   </div>
@@ -452,6 +497,9 @@
                 </div>
 
               </div>
+
+              <!-- Bottom Hint Text Matching Screenshot 2 -->
+              <div class="timeline-bottom-hint">Citizen updates on the left • Officer updates on the right</div>
 
             </div>
 
@@ -966,8 +1014,46 @@
 
   </aside>
 
+  <!-- ====================================================================
+       Mobile Bottom Navigation Bar (Active on screens <= 768px - Exact Image 2 Match)
+       ==================================================================== -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="Mobile Navigation">
+    <button type="button" class="mobile-nav-btn active" id="mobile-nav-dashboard" title="Home">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </button>
+    
+    <button type="button" class="mobile-nav-btn" id="mobile-nav-tracker" title="Tracker">
+      <div class="mobile-nav-icon-wrap">
+        <i class="fa-solid fa-chart-line"></i>
+        <span id="mobile-tracker-badge" class="nav-badge">30</span>
+      </div>
+      <span>Tracker</span>
+    </button>
+
+    <!-- Elevated Shutter Action Button (Center FAB) -->
+    <div class="mobile-fab-container">
+      <button type="button" class="mobile-fab-shutter" id="mobile-snap-btn" aria-label="Snap & Report Grievance">
+        <i class="fa-solid fa-camera"></i>
+        <span class="mobile-fab-shutter-text">Snap</span>
+      </button>
+    </div>
+
+    <a href="tel:18002330123" class="mobile-nav-btn" id="mobile-nav-helpline" title="Civic Helpline">
+      <i class="fa-solid fa-phone"></i>
+      <span>Helpline</span>
+    </a>
+
+    <a href="admin.html" class="mobile-nav-btn" id="mobile-nav-admin" title="Admin Desk">
+      <i class="fa-solid fa-shield-halved"></i>
+      <span>Admin</span>
+    </a>
+  </nav>
+
   <!-- Leaflet GIS Map JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- PWA Controller -->
+  <script src="js/pwa.js"></script>
   <!-- Citizen App Engine -->
   <script type="module" src="js/citizen.js"></script>
 </body>

@@ -177,12 +177,84 @@ We will expand `Store` with four dedicated storage keys:
 
 ---
 
-## Verification Plan
-1. **Automated Browser Subagent**:
-   - Navigate through each sidebar tab: All Complaints -> Workbench -> Task Management -> Meeting Schedule -> Department Master -> Screen Master.
-   - Capture screenshots of each screen to verify pixel-perfect fidelity against the Figma prototype and reference screenshots.
-2. **Interactive Testing**:
-   - Expand row 1 in Workbench -> verify 4-step stepper and SLA card open cleanly.
-   - Switch to Task Management -> verify 7 KPI cards and officer analytics.
-   - Switch to Meeting Schedule -> verify upcoming vs history tabs and Schedule Meeting modal.
-   - Switch to Department Master -> verify 4 KPI cards and 66 departments counter.
+---
+
+## Phase 7: PWA Implementation & Mobile Responsive Architecture
+
+### Overview
+Transform the Amravati Municipal Corporation Civic Grievance Redressal Portal into a fully installable, offline-resilient Progressive Web App (PWA) with a first-class mobile user experience. When accessed on mobile devices (smartphones and tablets), the portal shifts from a desktop multi-pane layout to a native-feeling mobile app featuring a fixed bottom navigation bar, floating shutter action button, 2x2 responsive KPI grids, touch-friendly GIS map view, mobile master-detail ticket tracker, and off-canvas slide-out navigation drawer for the Admin Desk.
+
+### Architecture Decisions
+1. **Modern CSS & Vector Icon CDNs**:
+   - Modern Normalize CDN (`modern-normalize`) to ensure consistent typography and baseline rendering across mobile iOS Safari and Android Chrome.
+   - Font Awesome 6 CDN (`https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css`) for high-DPI vector icons across mobile bottom navigation, status indicators, and shutter buttons.
+2. **PWA Standards**:
+   - Web App Manifest (`manifest.json`) with standalone display, theme color `#059669`, background color `#f8fafc`, civic branding icons (192x192, 512x512, maskable), and app shortcuts.
+   - Service Worker (`sw.js`) implementing Stale-While-Revalidate caching for static assets (HTML, CSS, JS, fonts, icons) and network fallback for offline civic ward usage.
+   - Native PWA Install Banner (`js/pwa.js`) handling `beforeinstallprompt` to let citizens install the app to their home screens with one tap.
+   - Full viewport cover (`viewport-fit=cover`) and safe-area inset support (`env(safe-area-inset-bottom)`) for notched iPhones and gesture-bar Android devices.
+3. **Mobile Layout Architecture (Citizen Portal - `index.html`)**:
+   - Header: Responsive compact branding with language toggle and avatar badge.
+   - Bottom Navigation Bar: Persistent native app bar with 5 destinations (Dashboard, Report FAB Shutter, Live Tracker, Officer Desk, Account).
+   - View 1 (Dashboard): 2x2 KPI grid, responsive map container with touch drag/zoom, and touch-snapped horizontal evidence carousel.
+   - View 2 (Tracker): Master-detail responsive view. On mobile (< 768px), tapping a ticket switches to Ticket Detail with a sticky "← Back to Tickets" navigation bar.
+   - Snap & Report Wizard: Responsive bottom-sheet / modal dialog with comfortable 48px touch inputs and camera shutter button.
+4. **Mobile Layout Architecture (Admin Desk - `admin.html`)**:
+   - Hamburger menu button in header triggering a smooth off-canvas slide drawer with backdrop overlay.
+   - Horizontal scrolling data tables (`.table-responsive`) with sticky columns.
+   - Responsive KPI card grids and accordion stepper flex-wrap.
+
+---
+
+### Task List: Phase 7
+
+#### Phase 7.1: CDN Integration & PWA Foundations
+- [ ] **Task 24: CDN Styling & Vector Icons Setup**
+  - Add `modern-normalize.min.css` CDN and `font-awesome/6.5.1` CDN to `index.html` and `admin.html`.
+  - Add viewport cover, theme-color `#059669`, and Apple Web App meta tags.
+- [ ] **Task 25: Web App Manifest & App Icons Generation**
+  - Create `manifest.json` with standalone display, orientations, theme colors, and quick shortcuts.
+  - Create high-resolution SVG and PNG icons in `/icons/` (`icon-192.png`, `icon-512.png`, `icon-maskable.png`).
+- [ ] **Task 26: Service Worker & PWA Controller (`sw.js`, `js/pwa.js`)**
+  - Implement cache lifecycle: cache static assets, stale-while-revalidate strategy, offline fallback.
+  - Implement `js/pwa.js` to register service worker and capture `beforeinstallprompt` for custom mobile install banner.
+
+#### Checkpoint 1: PWA Shell Verified
+- [ ] Manifest passes browser validation
+- [ ] Service worker registers and caches shell assets successfully
+
+#### Phase 7.2: Citizen Portal Mobile Responsiveness (`index.html`, `css/components.css`, `js/citizen.js`)
+- [ ] **Task 27: Responsive Mobile Header & Safe Area Styling**
+  - Compact logo + title on screens <= 768px.
+  - Support `env(safe-area-inset-top)` and `env(safe-area-inset-bottom)`.
+- [ ] **Task 28: Mobile Native Bottom Navigation Bar & Shutter FAB**
+  - Build `.mobile-bottom-nav` with Dashboard, Tracker (with badge), Officer Desk, Profile, and an elevated center Shutter Button (`#mobile-snap-btn`).
+  - Automatically show on mobile (<= 768px) and hide on desktop (> 768px).
+- [ ] **Task 29: View 1 (Map & Dashboard) Mobile Optimization**
+  - Reorganize 4 KPI cards into a 2x2 responsive grid on mobile screens.
+  - Ensure GIS map maintains interactive touch controls and top filter pills wrap cleanly.
+  - Adjust bottom evidence carousel cards to 85vw with horizontal scroll snapping.
+- [ ] **Task 30: View 2 (Live Tracker) Master-Detail Mobile Transition**
+  - Implement mobile list/detail toggle: tapping a ticket smoothly opens the ticket dossier with a "← Back to Tickets" bar on mobile screens.
+  - Stack two-column citizen/officer timeline into a vertical responsive stepper on mobile.
+- [ ] **Task 31: Mobile Snap & Report Wizard & Modals**
+  - Make Report Wizard modal responsive (fullscreen/bottom sheet on mobile with touch-friendly 44px+ inputs and large camera button).
+  - Ensure Profile dropdown, OTP modal, and Inspect Evidence modals are 100% responsive without horizontal overflow.
+
+#### Checkpoint 2: Citizen Flow Mobile Verified
+- [ ] Citizen portal displays cleanly on 375px/390px/412px mobile viewports
+- [ ] Bottom navigation switches between Dashboard, Tracker, and Report Wizard
+- [ ] Master-Detail ticket navigation works seamlessly on mobile
+
+#### Phase 7.3: Admin Desk Mobile Responsiveness (`admin.html`, `css/components.css`, `js/admin.js`)
+- [ ] **Task 32: Admin Mobile Drawer & Hamburger Navigation**
+  - Add hamburger button to `admin.html` header.
+  - Implement off-canvas slide-over drawer with backdrop overlay for the admin sidebar.
+- [ ] **Task 33: Responsive Tables, Accordion Stepper & KPI Grids**
+  - Add touch horizontal scroll containers for 193 complaints table, tasks analytics table, and department master.
+  - Ensure Workbench accordion stepper nodes wrap gracefully without clipping.
+
+#### Checkpoint 3: Complete Mobile & PWA Verification
+- [ ] Test both pages across mobile viewports (375x667, 390x844, 412x915) using browser subagent
+- [ ] PWA install prompt triggers and dismisses properly
+

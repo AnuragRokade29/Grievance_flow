@@ -227,8 +227,30 @@ function setupSidebarNav() {
     });
   }
 
+  // Mobile Hamburger & Drawer Toggle
+  const hamburgerBtn = document.getElementById('admin-hamburger-btn');
+  const sidebar = document.getElementById('admin-sidebar');
+  const backdrop = document.getElementById('admin-sidebar-backdrop');
+  const closeBtn = document.getElementById('admin-sidebar-close-btn');
+
+  function openMobileDrawer() {
+    sidebar?.classList.add('mobile-open');
+    backdrop?.classList.add('show');
+  }
+
+  function closeMobileDrawer() {
+    sidebar?.classList.remove('mobile-open');
+    backdrop?.classList.remove('show');
+  }
+
+  hamburgerBtn?.addEventListener('click', openMobileDrawer);
+  backdrop?.addEventListener('click', closeMobileDrawer);
+  closeBtn?.addEventListener('click', closeMobileDrawer);
+
   window.switchAdminScreen = function(screenName) {
     activeAdminScreen = screenName;
+    closeMobileDrawer();
+
     const sAll = document.getElementById('screen-all-complaints');
     const sNewGrv = document.getElementById('screen-new-grievance');
     const sWb = document.getElementById('screen-workbench');

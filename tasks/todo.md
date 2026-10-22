@@ -95,4 +95,42 @@
   - [x] Test citizen profile dropdown, logout, guest state, and logging in as new user ("Pooja Sharma")
   - [x] Test admin profile dropdown, logout, login modal display, and re-login
 
+## Phase 7: PWA Implementation & Mobile Responsive Architecture
+- [ ] **Task 24**: CDN Styling & Vector Icons Integration (`index.html`, `admin.html`)
+  - [ ] Add `modern-normalize.min.css` CDN for cross-browser baseline rendering
+  - [ ] Add `font-awesome/6.5.1/css/all.min.css` CDN for crisp high-DPI vector icons
+  - [ ] Add `viewport-fit=cover`, theme-color `#059669`, and Apple Web App meta tags
+- [ ] **Task 25**: Web App Manifest & App Icons (`manifest.json`, `icons/`)
+  - [ ] Create `manifest.json` with standalone display, shortcuts, colors, categories
+  - [ ] Generate high-res SVG & PNG icons (192x192, 512x512, maskable)
+- [ ] **Task 26**: Service Worker & PWA Install Banner (`sw.js`, `js/pwa.js`)
+  - [ ] Implement `sw.js` with Stale-While-Revalidate caching and offline fallback
+  - [ ] Implement `js/pwa.js` handling registration and `beforeinstallprompt` banner
+- [ ] **Task 27**: Mobile Header & Safe Area Layout (`index.html`, `css/components.css`)
+  - [ ] Compact header logo & title for screen width <= 768px
+  - [ ] Support `env(safe-area-inset-top)` and `env(safe-area-inset-bottom)`
+- [ ] **Task 28**: Mobile Bottom Navigation Bar & Shutter FAB (`index.html`, `css/components.css`)
+  - [ ] Fixed bottom navigation bar with Dashboard, Tracker (badge), Officer Desk, Account
+  - [ ] Elevated center Camera Shutter FAB button with pulsing action ring
+- [ ] **Task 29**: View 1 (Map & Dashboard) Mobile Grid & Carousel (`css/components.css`)
+  - [ ] 2x2 responsive KPI grid on mobile
+  - [ ] Touch gestures & responsive height for Leaflet GIS map
+  - [ ] Mobile scroll-snapped cards for horizontal evidence carousel (85vw)
+- [ ] **Task 30**: View 2 (Live Tracker) Master-Detail Navigation (`index.html`, `css/components.css`, `js/citizen.js`)
+  - [ ] Mobile list-to-detail view switch with sticky "← Back to Tickets" bar
+  - [ ] Stacked vertical stepper for citizen-officer timeline
+- [ ] **Task 31**: Mobile Snap & Report Wizard & Modals (`css/components.css`, `index.html`)
+  - [ ] Fullscreen / bottom-sheet responsive modal with 44px+ touch targets
+  - [ ] Responsive OTP modal, Inspect Evidence, and Profile dropdown
+- [ ] **Task 32**: Admin Mobile Drawer & Hamburger Menu (`admin.html`, `css/components.css`, `js/admin.js`)
+  - [ ] Hamburger menu button in admin header
+  - [ ] Off-canvas slide drawer with backdrop dismiss
+- [ ] **Task 33**: Responsive Admin Tables & Stepper (`css/components.css`)
+  - [ ] Touch-scrollable table containers (`.table-responsive`)
+  - [ ] Flex-wrap workbench accordion stepper nodes
+- [ ] **Task 34**: End-to-End Mobile Browser Verification
+  - [ ] Browser subagent verification of Citizen flow on 390x844 mobile viewport
+  - [ ] Browser subagent verification of Admin flow on mobile viewport
+
+
 

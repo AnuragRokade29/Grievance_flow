@@ -168,6 +168,33 @@ export const SEED_SCREENS = [
 
 export const SEED_COMPLAINTS = [
   {
+    id: 202,
+    grievanceNo: 'GRV-2026-000202',
+    trackingId: 'GRV-2026-000202',
+    citizen: 'Anurag',
+    mobile: '8459741554',
+    department: 'Sewerage & Drainage Department',
+    category: 'Waterlogging',
+    location: 'Camp Main Road, Amravati',
+    landmark: 'Near District Collector Office',
+    status: 'Pending',
+    priority: 'HIGH',
+    submittedDate: '22 Oct 2026, 01:19 pm',
+    slaRemaining: '46h remaining',
+    assignedOfficer: 'Unassigned',
+    isNew: true,
+    images: {
+      before: '',
+      after: ''
+    },
+    timeline: [
+      { step: 1, title: '1. Grievance Submitted', subtitle: 'Anurag • 01:19 PM', status: 'done', current: true },
+      { step: 2, title: '2. Field Unit Assigned', subtitle: 'Unassigned • Awaiting Officer Assignment', status: 'pending', current: false },
+      { step: 3, title: '3. Under Review & Inspection', subtitle: 'There is severe waterlogging on the road, causing...', status: 'pending', current: false },
+      { step: 4, title: '4. Resolved & Closed', subtitle: 'Officer will share work details and photos.', status: 'pending', current: false }
+    ]
+  },
+  {
     id: 229,
     grievanceNo: 'GRV-2026-000193',
     trackingId: 'GRV-2026-000193',
@@ -388,9 +415,10 @@ export const Store = {
         localStorage.setItem(COMPLAINTS_KEY, JSON.stringify(SEED_COMPLAINTS));
       } else {
         const parsed = JSON.parse(existing);
-        // If stored data does not include GRV-2026-000193, upgrade to SEED_COMPLAINTS
-        if (!Array.isArray(parsed) || !parsed.some(c => c.grievanceNo === 'GRV-2026-000193')) {
-          localStorage.setItem(COMPLAINTS_KEY, JSON.stringify(SEED_COMPLAINTS));
+        // Ensure GRV-2026-000202 (Waterlogging) matching reference image is present at the top
+        if (!Array.isArray(parsed) || !parsed.some(c => c.grievanceNo === 'GRV-2026-000202')) {
+          const updated = [SEED_COMPLAINTS[0], ...(Array.isArray(parsed) ? parsed : [])];
+          localStorage.setItem(COMPLAINTS_KEY, JSON.stringify(updated));
         }
       }
       if (!localStorage.getItem(DEPTS_KEY)) {

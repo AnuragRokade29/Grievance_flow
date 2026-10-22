@@ -2,9 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Admin Grievance Operations Desk • Amravati Municipal Corporation</title>
   <meta name="description" content="Official Municipal Officer Operations Desk and Redressal Workbench for Amravati Municipal Corporation." />
+
+  <!-- PWA & Mobile Web App Meta -->
+  <meta name="theme-color" content="#059669" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="AMC Desk" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png" />
+
+  <!-- Modern Normalize CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/2.0.0/modern-normalize.min.css" />
+
+  <!-- Font Awesome 6 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <!-- Fonts with Marathi Devanagari support -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -72,6 +89,10 @@
        ==================================================================== -->
   <header class="amc-header">
     <div class="amc-brand">
+      <!-- Mobile Sidebar Toggle -->
+      <button type="button" id="admin-hamburger-btn" class="admin-hamburger-btn" aria-label="Toggle Navigation Drawer">
+        <i class="fa-solid fa-bars"></i>
+      </button>
       <div class="amc-logo-circle">AMC</div>
       <div class="amc-titles">
         <h1 data-i18n="corpTitle">Amravati Municipal Corporation</h1>
@@ -83,6 +104,12 @@
     </div>
 
     <div class="amc-header-actions">
+      <!-- PWA Install Trigger -->
+      <button type="button" id="admin-pwa-install-btn" class="pill-btn pill-btn-pwa" onclick="window.triggerPwaInstall && window.triggerPwaInstall()" title="Install AMC Desk App">
+        <i class="fa-solid fa-cloud-arrow-down" style="color: #059669;"></i>
+        <span class="pwa-header-label">Install App</span>
+      </button>
+
       <!-- Back to Citizen Home -->
       <a href="index.html" class="pill-btn pill-btn-home" title="Go to Citizen Home">
         <span>🏠</span>
@@ -159,8 +186,16 @@
        ==================================================================== -->
   <div class="dashboard-layout">
     
+    <!-- Backdrop for Mobile Navigation Drawer -->
+    <div id="admin-sidebar-backdrop" class="admin-sidebar-backdrop"></div>
+
     <!-- Left Navigation Sidebar -->
-    <aside class="dashboard-sidebar" style="width: 240px;">
+    <aside class="dashboard-sidebar" id="admin-sidebar">
+      <!-- Mobile Close Drawer Header -->
+      <div class="mobile-drawer-header">
+        <div style="font-weight: 800; font-size: 0.85rem; color: #0f172a;">Municipal Navigation</div>
+        <button type="button" id="admin-sidebar-close-btn" class="drawer-close-btn" aria-label="Close Navigation">✕</button>
+      </div>
       <div class="sidebar-nav-section">
         <span class="nav-section-label" data-i18n="adminGroup">ADMINISTRATION</span>
         
@@ -1798,6 +1833,8 @@
     </div>
   </div>
 
+  <!-- PWA Controller -->
+  <script src="js/pwa.js"></script>
   <!-- Scripts -->
   <script type="module" src="js/admin.js"></script>
 </body>

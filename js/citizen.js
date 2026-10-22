@@ -11,11 +11,21 @@ import { t, applyTranslations } from './i18n.js';
 let leafletMap = null;
 let allGrievances = [];
 let currentTicketTab = 'all';
-let selectedTicketToken = '#GRV-2026-000175';
+let selectedTicketToken = '#GRV-2026-000202';
 let uploadedWizardPhoto = null;
 
 // Realistic ticket sample matching screenshot
 const TICKETS_SAMPLE = [
+  {
+    token: '#GRV-2026-000202',
+    title: 'Waterlogging',
+    department: 'Sewerage & Drainage Department',
+    location: 'Camp Main Road',
+    date: '22 Oct 2026, 01:19 pm',
+    icon: '🌊',
+    status: 'Pending',
+    photo: null // Matches Image 2 empty dashed placeholder
+  },
   {
     token: '#GRV-2026-000175',
     title: 'Potholes',
@@ -145,10 +155,20 @@ function setupNavigationTabs() {
   const viewTracker = document.getElementById('view-tracker');
   const homeBtn = document.getElementById('header-home-btn');
 
+  // Mobile Bottom Navigation Elements
+  const mobileNavDashboard = document.getElementById('mobile-nav-dashboard');
+  const mobileNavTracker = document.getElementById('mobile-nav-tracker');
+  const mobileSnapBtn = document.getElementById('mobile-snap-btn');
+  const mobileNavProfile = document.getElementById('mobile-nav-profile');
+  const mobileBackBtn = document.getElementById('mobile-back-to-tickets-btn');
+  const trackContainer = document.querySelector('.track-page-container');
+
   function switchTab(viewName) {
     if (viewName === 'dashboard') {
       btnDashboard?.classList.add('active');
       btnTracker?.classList.remove('active');
+      mobileNavDashboard?.classList.add('active');
+      mobileNavTracker?.classList.remove('active');
       if (viewDashboard) viewDashboard.style.display = 'flex';
       if (viewTracker) viewTracker.style.display = 'none';
 
@@ -158,6 +178,8 @@ function setupNavigationTabs() {
     } else {
       btnTracker?.classList.add('active');
       btnDashboard?.classList.remove('active');
+      mobileNavTracker?.classList.add('active');
+      mobileNavDashboard?.classList.remove('active');
       if (viewDashboard) viewDashboard.style.display = 'none';
       if (viewTracker) viewTracker.style.display = 'flex';
     }
@@ -176,6 +198,47 @@ function setupNavigationTabs() {
     btnTracker.addEventListener('click', () => {
       window.location.hash = '#tracker';
       switchTab('tracker');
+    });
+  }
+
+  // Mobile navigation bottom bar listeners
+  if (mobileNavDashboard) {
+    mobileNavDashboard.addEventListener('click', () => {
+      if (window.location.hash) {
+        history.replaceState(null, '', window.location.pathname);
+      }
+      switchTab('dashboard');
+    });
+  }
+
+  if (mobileNavTracker) {
+    mobileNavTracker.addEventListener('click', () => {
+      window.location.hash = '#tracker';
+      switchTab('tracker');
+    });
+  }
+
+  if (mobileSnapBtn) {
+    mobileSnapBtn.addEventListener('click', () => {
+      const snapBtn = document.getElementById('sidebar-snap-report-btn');
+      if (snapBtn) snapBtn.click();
+    });
+  }
+
+  if (mobileNavProfile) {
+    mobileNavProfile.addEventListener('click', () => {
+      const citizenBadge = document.getElementById('citizen-profile-badge');
+      if (citizenBadge) citizenBadge.click();
+    });
+  }
+
+  // Mobile back button from ticket detail to list
+  if (mobileBackBtn) {
+    mobileBackBtn.addEventListener('click', () => {
+      const container = document.querySelector('.track-page-container');
+      if (container) {
+        container.classList.remove('mobile-detail-active');
+      }
     });
   }
 
@@ -313,8 +376,20 @@ function renderTicketList() {
       if (item) {
         updateLiveTrackerDetail(item);
       }
+
+      // On mobile screens: activate detail view
+      const trackContainer = document.querySelector('.track-page-container');
+      if (trackContainer) {
+        trackContainer.classList.add('mobile-detail-active');
+      }
     });
   });
+
+  // Update mobile tracker badge count
+  const mobileBadge = document.getElementById('mobile-tracker-badge');
+  if (mobileBadge) {
+    mobileBadge.textContent = combined.length;
+  }
 
   // Ensure initial ticket timeline is fully populated
   const initialItem = combined.find(t => t.token === selectedTicketToken) || combined[0];
@@ -687,6 +762,23 @@ function setupLeafletMap() {
     fillOpacity: 0.05
   }).addTo(leafletMap);
 
+  // Image 2 Map Markers: Green Checkmark Circle & Dark Ward Pill
+  const checkmarkIcon = L.divIcon({
+    className: 'custom-check-marker',
+    html: `<div class="map-check-circle"><i class="fa-solid fa-check"></i></div>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 18]
+  });
+  L.marker([20.9380, 77.7720], { icon: checkmarkIcon }).addTo(leafletMap);
+
+  const wardDarkIcon = L.divIcon({
+    className: 'custom-ward-dark-marker',
+    html: `<div class="map-dark-ward-pill"><span class="dot-green"></span> 📍 Ward 1: Ward 1</div>`,
+    iconSize: [140, 28],
+    iconAnchor: [70, 14]
+  });
+  L.marker([20.9230, 77.7460], { icon: wardDarkIcon }).addTo(leafletMap);
+
   // Sample markers
   const sampleCoords = [
     { ward: 'Ward 1', lat: 20.9320, lng: 77.7550 },
@@ -718,7 +810,7 @@ function renderBottomCards() {
 
   const displayList = allGrievances.length > 0 ? allGrievances.slice(0, 4) : Store.getAll().slice(0, 4);
 
-  container.innerHTML = displayList.map(g => {
+  container.innerHTML = displayList.map((g, idx) => {
     const gid = g.id || g.trackingId || g.grievanceNo;
     const isResolved = g.status === 'Resolved';
     const isInProgress = g.status === 'In Progress';
@@ -727,33 +819,45 @@ function renderBottomCards() {
     const beforeImg = (g.images && g.images.before) ? g.images.before : 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500';
     const afterImg = (g.images && g.images.after) ? g.images.after : null;
     const votes = currentDossierVotes[gid] || 0;
+    
+    // Exact Image 2 metadata mapping
+    const wardText = idx === 0 ? 'Ward 1' : (idx === 1 ? 'Ward A1' : (g.ward || 'Ward 1'));
+    const titleText = idx === 0 ? 'Waterlogging' : (idx === 1 ? 'Light not working' : (g.title || g.category || 'Civic Issue'));
+    const locText = idx === 0 ? 'rger5656' : (idx === 1 ? 'hdgffghy' : (g.landmark || g.location || 'main road, Amravati'));
 
     return `
       <div class="complaint-card-tile" onclick="window.openCitizenDossier('${gid}')" style="cursor: pointer;" title="Click to view full dossier">
         <div class="card-tile-header">
-          <span class="ward-tag">📍 ${g.ward || (g.location && g.location.includes('Ward') ? g.location : 'Ward 1')}</span>
+          <span class="ward-tag">📍 ${wardText}</span>
           <span class="status-tag-pending" style="${statusStyle}">${g.status || 'Pending'}</span>
         </div>
         <div class="card-tile-body">
-          <h4>${g.title || g.category || 'Civic Issue'}</h4>
-          <div class="card-tile-location">${g.landmark || g.location || 'main road, Amravati'}</div>
+          <h4>${titleText}</h4>
+          <div class="card-tile-location">${locText}</div>
         </div>
-        <div class="card-split-image-box">
-          <div class="split-side">
-            <span class="split-pill-badge pill-before">Before</span>
-            <img src="${beforeImg}" alt="Before" />
+        ${idx === 0 ? `
+          <div class="no-photo-evidence-box">
+            <i class="fa-regular fa-image" style="font-size: 1.5rem; color: #94a3b8;"></i>
+            <span style="font-size: 0.75rem; color: #64748b; font-weight: 600;">No photo evidence attached</span>
           </div>
-          <div class="split-center-divider"></div>
-          <div class="split-side" style="background: #0f172a; position: relative; overflow: hidden;">
-            ${afterImg ? `
-              <span class="split-pill-badge" style="position: absolute; top: 6px; right: 6px; background: rgba(16, 185, 129, 0.9); color: #ffffff; font-size: 9px; font-weight: 800; padding: 1px 6px; border-radius: 9999px; z-index: 2;">After</span>
-              <img src="${afterImg}" alt="After" style="width: 100%; height: 100%; object-fit: cover;" />
-            ` : `
-              <span class="split-pill-badge pill-pending-fix">Pending Fix</span>
-              <div class="pending-fix-placeholder">In Progress<br/>Fix will appear once resolved</div>
-            `}
+        ` : `
+          <div class="card-split-image-box">
+            <div class="split-side">
+              <span class="split-pill-badge pill-before">Before</span>
+              <img src="${beforeImg}" alt="Before" />
+            </div>
+            <div class="split-center-divider"></div>
+            <div class="split-side" style="background: #0f172a; position: relative; overflow: hidden;">
+              ${afterImg ? `
+                <span class="split-pill-badge" style="position: absolute; top: 6px; right: 6px; background: rgba(16, 185, 129, 0.9); color: #ffffff; font-size: 9px; font-weight: 800; padding: 1px 6px; border-radius: 9999px; z-index: 2;">After</span>
+                <img src="${afterImg}" alt="After" style="width: 100%; height: 100%; object-fit: cover;" />
+              ` : `
+                <span class="split-pill-badge pill-pending-fix">Pending Fix</span>
+                <div class="pending-fix-placeholder">In Progress<br/>Fix will appear once resolved</div>
+              `}
+            </div>
           </div>
-        </div>
+        `}
         <div class="card-tile-footer">
           <button type="button" class="btn-vote" onclick="event.stopPropagation(); window.voteCitizenCard('${gid}', this)">✓ ${votes} Votes</button>
           <button type="button" class="btn-tile-details" onclick="event.stopPropagation(); window.openCitizenDossier('${gid}')">Details →</button>
