@@ -254,7 +254,20 @@ Transform the Amravati Municipal Corporation Civic Grievance Redressal Portal in
   - Add touch horizontal scroll containers for 193 complaints table, tasks analytics table, and department master.
   - Ensure Workbench accordion stepper nodes wrap gracefully without clipping.
 
-#### Checkpoint 3: Complete Mobile & PWA Verification
-- [ ] Test both pages across mobile viewports (375x667, 390x844, 412x915) using browser subagent
-- [ ] PWA install prompt triggers and dismisses properly
+---
+
+## Phase 8: Fully Completed Grievances & Officer Assignment Flow
+
+### Overview
+Enable realistic municipal resolution demonstration in the Citizen Grievance Tracker (`#view-tracker`):
+1. **Completed & In-Progress Seed Data**: Populate complaints with verified assigned officers (`Er. Amit V. Patil`, `Sanjay Patil`, `Er. Rajesh Deshmukh`), roles, official phone numbers, rapid squad designations, and resolved before/after image pairs.
+2. **Dynamic 4-Stage Stepper**: Update Row 2 (`Assigned: Er. Amit V. Patil`), Row 3 (`Site Inspection & Restoration`), and Row 4 (`Resolved & Certified`) with green checkmarks, timestamps, and realistic field remarks when resolved.
+3. **Interactive "Officers & Squad" Sub-Tab**: Enable switching between `Live Timeline` and `Officers & Squad` to inspect the designated Junior Engineer, field crew size, deployed machinery, and direct municipal call trigger.
+4. **Top Status & Evidence Box Sync**: Automatically toggle `#detail-status-pill-top` (`● RESOLVED`, `● IN PROGRESS`, `● PENDING`) and show side-by-side Before/After thumbnails.
+
+### Tasks
+- [ ] **Task 35**: Seed Rich Officer & Resolution Metadata in Store & Samples (`js/store.js`, `js/citizen.js`)
+- [ ] **Task 36**: Dynamic Timeline Stepper & Status Badge Synchronization (`js/citizen.js`)
+- [ ] **Task 37**: Before & After Dual Thumbnail Evidence Box (`index.html`, `js/citizen.js`, `css/components.css`)
+- [ ] **Task 38**: Interactive Officers & Squad Dossier View (`index.html`, `js/citizen.js`, `css/components.css`)
 

@@ -128,9 +128,21 @@
 - [ ] **Task 33**: Responsive Admin Tables & Stepper (`css/components.css`)
   - [ ] Touch-scrollable table containers (`.table-responsive`)
   - [ ] Flex-wrap workbench accordion stepper nodes
-- [ ] **Task 34**: End-to-End Mobile Browser Verification
-  - [ ] Browser subagent verification of Citizen flow on 390x844 mobile viewport
-  - [ ] Browser subagent verification of Admin flow on mobile viewport
+## Phase 8: Fully Completed Grievances & Officer Assignment Flow
+- [ ] **Task 35**: Seed Rich Officer & Resolution Metadata in Store & Samples (`js/store.js`, `js/citizen.js`)
+  - [ ] Add verified officers (`Er. Amit V. Patil`, `Sanjay Patil`, `Er. Rajesh Deshmukh`), roles, contacts, squads, and before/after photos
+  - [ ] Configure `#GRV-2026-000175` as fully `Resolved` and `#GRV-2026-000108` as `In Progress`
+- [ ] **Task 36**: Dynamic Timeline Stepper & Status Badge Synchronization (`js/citizen.js`)
+  - [ ] Synchronize `#detail-status-pill-top` (`● RESOLVED`, `● IN PROGRESS`, `● PENDING`)
+  - [ ] Populate Step 2 with assigned officer name, role, squad, and phone
+  - [ ] Populate Step 3 with site inspection & restoration details
+  - [ ] Populate Step 4 with verified closed badge and completion statement
+- [ ] **Task 37**: Before & After Dual Thumbnail Evidence Box (`index.html`, `js/citizen.js`, `css/components.css`)
+  - [ ] Render both BEFORE and AFTER thumbnails when a complaint is resolved
+  - [ ] Update status pill with officer resolution confirmation
+- [ ] **Task 38**: Interactive Officers & Squad Dossier View (`index.html`, `js/citizen.js`, `css/components.css`)
+  - [ ] Wire `Live Timeline` vs `Officers & Squad` sub-tab click handlers
+  - [ ] Render Junior Engineer profile card, contact call action, squad team size, and deployed machinery
 
 
 

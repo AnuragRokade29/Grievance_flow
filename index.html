@@ -331,11 +331,11 @@
 
             <!-- Sub tabs: Live Timeline / Officers & Squad -->
             <div class="ticket-sub-tabs">
-              <div class="sub-tab-item active">
+              <div class="sub-tab-item active" id="sub-tab-timeline">
                 <i class="fa-solid fa-check"></i>
                 <span>Live Timeline</span>
               </div>
-              <div class="sub-tab-item">
+              <div class="sub-tab-item" id="sub-tab-officers">
                 <i class="fa-solid fa-users"></i>
                 <span>Officers & Squad</span>
               </div>
@@ -358,20 +358,30 @@
                 </div>
 
                 <div class="ba-card-body-content">
-                  <div class="ba-row-item">
-                    <span class="ba-label-tag">BEFORE:</span>
-                    <div class="ba-thumb-container">
-                      <div id="detail-no-photo-box" class="ba-dashed-empty-box" style="display: none;">
-                        <i class="fa-regular fa-image"></i>
+                  <div class="ba-photos-split-row">
+                    <div class="ba-row-item">
+                      <span class="ba-label-tag">BEFORE:</span>
+                      <div class="ba-thumb-container">
+                        <div id="detail-no-photo-box" class="ba-dashed-empty-box" style="display: none;">
+                          <i class="fa-regular fa-image"></i>
+                        </div>
+                        <img id="detail-before-img" src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=500" alt="Before repair" />
                       </div>
-                      <img id="detail-before-img" src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=500" alt="Before repair" />
+                    </div>
+
+                    <div class="ba-row-item" id="ba-row-after" style="display: none;">
+                      <span class="ba-label-tag" style="color: #059669;">AFTER:</span>
+                      <div class="ba-thumb-container ba-thumb-after">
+                        <img id="detail-after-img" src="" alt="After repair" />
+                        <span class="ba-after-badge"><i class="fa-solid fa-check"></i> Resolved</span>
+                      </div>
                     </div>
                   </div>
 
                   <div class="ba-row-item" style="margin-top: 0.5rem;">
                     <span class="ba-label-tag">STATUS:</span>
                     <div id="detail-ba-status-pill" class="ba-status-pill-dark">
-                      <span class="ba-clock-icon">⏰</span>
+                      <span class="ba-clock-icon" id="detail-ba-status-icon">⏰</span>
                       <div class="ba-status-text-col">
                         <div id="detail-ba-status-title" class="ba-status-title">Pending Fix</div>
                         <div id="detail-ba-status-sub" class="ba-status-sub">Work in progress on site</div>
@@ -381,125 +391,133 @@
                 </div>
               </div>
 
-              <!-- Two-Column Flow (Citizen vs Officer with Center Spine - Matching Screenshot 1) -->
-              <div class="timeline-two-column-flow">
-                
-                <div class="timeline-flow-header-roles">
-                  <div class="role-header-col role-citizen">
-                    <span>👤</span>
-                    <span>Citizen</span>
-                  </div>
-                  <div class="role-header-spine-spacer"></div>
-                  <div class="role-header-col role-officer">
-                    <span style="color: #2563eb;">🛡️</span>
-                    <span>Officer</span>
-                  </div>
-                </div>
-
-                <div class="timeline-spine-wrapper">
-                  <!-- Continuous Vertical Center Spine Line -->
-                  <div class="timeline-vertical-spine-line"></div>
-
-                  <!-- ROW 1: Citizen Submission (Step 1) -->
-                  <div class="timeline-step-row citizen-row" id="track-step-row-1">
-                    <div class="timeline-card-cell left-cell">
-                      <div class="flow-citizen-card">
-                        <div class="flow-card-icon-box">
-                          <span style="font-size: 1.35rem; color: #059669;">📄</span>
-                        </div>
-                        <div class="flow-card-body">
-                          <h4 id="flow-card-status-1">Pending</h4>
-                          <div id="flow-card-defect">Waterlogging</div>
-                          <div class="flow-card-time" id="flow-card-date">22 Oct 2026, 01:19 pm</div>
-                        </div>
-                      </div>
-                      <div class="timeline-connector-branch right-branch" id="track-branch-1"></div>
+              <!-- VIEW A: Two-Column Flow (Live Timeline) -->
+              <div id="timeline-flow-view">
+                <div class="timeline-two-column-flow">
+                  
+                  <div class="timeline-flow-header-roles">
+                    <div class="role-header-col role-citizen">
+                      <span>👤</span>
+                      <span>Citizen</span>
                     </div>
-
-                    <div class="timeline-node-cell">
-                      <div class="timeline-spine-node done" id="track-node-1">
-                        <span>✓</span>
-                      </div>
-                    </div>
-
-                    <div class="timeline-card-cell right-cell empty-cell"></div>
-                  </div>
-
-                  <!-- ROW 2: Field Unit Assigned (Step 2) -->
-                  <div class="timeline-step-row officer-row" id="track-step-row-2">
-                    <div class="timeline-card-cell left-cell empty-cell"></div>
-
-                    <div class="timeline-node-cell">
-                      <div class="timeline-spine-node" id="track-node-2">
-                        <span class="node-inner-dot"></span>
-                      </div>
-                    </div>
-
-                    <div class="timeline-card-cell right-cell">
-                      <div class="timeline-connector-branch left-branch" id="track-branch-2"></div>
-                      <div class="officer-step-card" id="track-card-2">
-                        <div class="officer-card-header">
-                          <span class="officer-icon-badge" style="color: #2563eb;">👤</span>
-                          <h5 id="flow-card-status-2">Assigned</h5>
-                        </div>
-                        <p id="flow-card-sub-2">We will assign an officer soon.</p>
-                      </div>
+                    <div class="role-header-spine-spacer"></div>
+                    <div class="role-header-col role-officer">
+                      <span style="color: #2563eb;">🛡️</span>
+                      <span>Officer</span>
                     </div>
                   </div>
 
-                  <!-- ROW 3: Under Review & Squad Inspection (Step 3) -->
-                  <div class="timeline-step-row officer-row" id="track-step-row-3">
-                    <div class="timeline-card-cell left-cell empty-cell"></div>
+                  <div class="timeline-spine-wrapper">
+                    <!-- Continuous Vertical Center Spine Line -->
+                    <div class="timeline-vertical-spine-line"></div>
 
-                    <div class="timeline-node-cell">
-                      <div class="timeline-spine-node" id="track-node-3">
-                        <span class="node-inner-dot"></span>
-                      </div>
-                    </div>
-
-                    <div class="timeline-card-cell right-cell">
-                      <div class="timeline-connector-branch left-branch" id="track-branch-3"></div>
-                      <div class="officer-step-card" id="track-card-3">
-                        <div class="officer-card-header">
-                          <span class="officer-icon-badge" style="color: #f59e0b;">🔧</span>
-                          <h5 id="flow-card-status-3">Under Review</h5>
-                        </div>
-                        <p id="flow-card-sub-3">There is severe waterlogging on the road, causing...</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- ROW 4: Verified & Resolved (Step 4) -->
-                  <div class="timeline-step-row officer-row" id="track-step-row-4">
-                    <div class="timeline-card-cell left-cell empty-cell"></div>
-
-                    <div class="timeline-node-cell">
-                      <div class="timeline-spine-node" id="track-node-4">
-                        <span class="node-inner-dot"></span>
-                      </div>
-                    </div>
-
-                    <div class="timeline-card-cell right-cell">
-                      <div class="timeline-connector-branch left-branch" id="track-branch-4"></div>
-                      <div class="officer-step-card resolved-card" id="track-card-4">
-                        <div class="officer-card-header" style="justify-content: space-between;">
-                          <div style="display: flex; align-items: center; gap: 0.45rem;">
-                            <span class="officer-icon-badge" style="color: #94a3b8;">🕒</span>
-                            <h5 id="flow-card-status-4">Resolved</h5>
+                    <!-- ROW 1: Citizen Submission (Step 1) -->
+                    <div class="timeline-step-row citizen-row" id="track-step-row-1">
+                      <div class="timeline-card-cell left-cell">
+                        <div class="flow-citizen-card">
+                          <div class="flow-card-icon-box">
+                            <span style="font-size: 1.35rem; color: #059669;">📄</span>
                           </div>
-                          <span id="flow-card-badge-4" class="upcoming-badge">Upcoming</span>
+                          <div class="flow-card-body">
+                            <h4 id="flow-card-status-1">Pending</h4>
+                            <div id="flow-card-defect">Waterlogging</div>
+                            <div class="flow-card-time" id="flow-card-date">22 Oct 2026, 01:19 pm</div>
+                          </div>
                         </div>
-                        <p id="flow-card-sub-4">Officer will share work details and photos.</p>
+                        <div class="timeline-connector-branch right-branch" id="track-branch-1"></div>
+                      </div>
+
+                      <div class="timeline-node-cell">
+                        <div class="timeline-spine-node done" id="track-node-1">
+                          <span>✓</span>
+                        </div>
+                      </div>
+
+                      <div class="timeline-card-cell right-cell empty-cell"></div>
+                    </div>
+
+                    <!-- ROW 2: Field Unit Assigned (Step 2) -->
+                    <div class="timeline-step-row officer-row" id="track-step-row-2">
+                      <div class="timeline-card-cell left-cell empty-cell"></div>
+
+                      <div class="timeline-node-cell">
+                        <div class="timeline-spine-node" id="track-node-2">
+                          <span class="node-inner-dot"></span>
+                        </div>
+                      </div>
+
+                      <div class="timeline-card-cell right-cell">
+                        <div class="timeline-connector-branch left-branch" id="track-branch-2"></div>
+                        <div class="officer-step-card" id="track-card-2">
+                          <div class="officer-card-header">
+                            <span class="officer-icon-badge" style="color: #2563eb;" id="flow-card-icon-2">👤</span>
+                            <h5 id="flow-card-status-2">Assigned</h5>
+                          </div>
+                          <p id="flow-card-sub-2">We will assign an officer soon.</p>
+                          <div id="flow-card-officer-meta-2" class="flow-officer-meta-pill" style="display: none;"></div>
+                        </div>
                       </div>
                     </div>
+
+                    <!-- ROW 3: Under Review & Squad Inspection (Step 3) -->
+                    <div class="timeline-step-row officer-row" id="track-step-row-3">
+                      <div class="timeline-card-cell left-cell empty-cell"></div>
+
+                      <div class="timeline-node-cell">
+                        <div class="timeline-spine-node" id="track-node-3">
+                          <span class="node-inner-dot"></span>
+                        </div>
+                      </div>
+
+                      <div class="timeline-card-cell right-cell">
+                        <div class="timeline-connector-branch left-branch" id="track-branch-3"></div>
+                        <div class="officer-step-card" id="track-card-3">
+                          <div class="officer-card-header">
+                            <span class="officer-icon-badge" style="color: #f59e0b;" id="flow-card-icon-3">🔧</span>
+                            <h5 id="flow-card-status-3">Under Review</h5>
+                          </div>
+                          <p id="flow-card-sub-3">There is severe waterlogging on the road, causing...</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- ROW 4: Verified & Resolved (Step 4) -->
+                    <div class="timeline-step-row officer-row" id="track-step-row-4">
+                      <div class="timeline-card-cell left-cell empty-cell"></div>
+
+                      <div class="timeline-node-cell">
+                        <div class="timeline-spine-node" id="track-node-4">
+                          <span class="node-inner-dot"></span>
+                        </div>
+                      </div>
+
+                      <div class="timeline-card-cell right-cell">
+                        <div class="timeline-connector-branch left-branch" id="track-branch-4"></div>
+                        <div class="officer-step-card resolved-card" id="track-card-4">
+                          <div class="officer-card-header" style="justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 0.45rem;">
+                              <span class="officer-icon-badge" style="color: #94a3b8;" id="flow-card-icon-4">🕒</span>
+                              <h5 id="flow-card-status-4">Resolved</h5>
+                            </div>
+                            <span id="flow-card-badge-4" class="upcoming-badge">Upcoming</span>
+                          </div>
+                          <p id="flow-card-sub-4">Officer will share work details and photos.</p>
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
 
                 </div>
 
+                <!-- Bottom Hint Text Matching Screenshot 2 -->
+                <div class="timeline-bottom-hint">Citizen updates on the left • Officer updates on the right</div>
               </div>
 
-              <!-- Bottom Hint Text Matching Screenshot 2 -->
-              <div class="timeline-bottom-hint">Citizen updates on the left • Officer updates on the right</div>
+              <!-- VIEW B: Officers & Squad Dossier Panel (Shown when Officers & Squad sub-tab is clicked) -->
+              <div id="officers-squad-view" class="officers-squad-view-panel" style="display: none;">
+                <!-- Populated dynamically via js/citizen.js -->
+              </div>
 
             </div>
 
@@ -1050,11 +1068,35 @@
     </a>
   </nav>
 
+  <!-- ====================================================================
+       Lightbox Modal for Evidence Photo Zoom (Click to open big)
+       ==================================================================== -->
+  <div id="image-lightbox-modal" class="image-lightbox-backdrop" style="display: none;">
+    <div class="image-lightbox-card">
+      <div class="image-lightbox-header">
+        <div class="image-lightbox-tag-title">
+          <span id="image-lightbox-badge" class="image-lightbox-badge">BEFORE</span>
+          <h4 id="image-lightbox-title" style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #ffffff;">Evidence Photo</h4>
+        </div>
+        <button type="button" id="image-lightbox-close-btn" class="image-lightbox-close" aria-label="Close photo preview">✕</button>
+      </div>
+      <div class="image-lightbox-image-wrap">
+        <img id="image-lightbox-img" src="" alt="Full civic evidence" />
+      </div>
+      <div class="image-lightbox-footer">
+        <div id="image-lightbox-caption" class="image-lightbox-caption">Municipal evidence recorded on-site</div>
+        <button type="button" id="image-lightbox-dismiss-btn" class="pill-btn" style="background: rgba(255,255,255,0.15); color: #ffffff; border: 1px solid rgba(255,255,255,0.25); font-size: 0.75rem;">
+          Close (बंद करा)
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Leaflet GIS Map JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <!-- PWA Controller -->
-  <script src="js/pwa.js?v=2.3"></script>
+  <script src="js/pwa.js?v=2.4"></script>
   <!-- Citizen App Engine -->
-  <script type="module" src="js/citizen.js?v=2.3"></script>
+  <script type="module" src="js/citizen.js?v=2.4"></script>
 </body>
 </html>

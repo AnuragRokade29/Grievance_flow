@@ -24,7 +24,8 @@ const TICKETS_SAMPLE = [
     date: '22 Oct 2026, 01:19 pm',
     icon: '🌊',
     status: 'Pending',
-    photo: null // Matches Image 2 empty dashed placeholder
+    assignedOfficer: 'Unassigned',
+    photo: 'images/water-before.jpg'
   },
   {
     token: '#GRV-2026-000175',
@@ -33,28 +34,60 @@ const TICKETS_SAMPLE = [
     location: 'Camp Main Road',
     date: '17 Oct 2026, 02:33 pm',
     icon: '🛣️',
-    status: 'Pending',
-    photo: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=500'
-  },
-  {
-    token: '#GRV-2026-000116',
-    title: 'Light not working',
-    department: 'Street Lighting Department',
-    location: 'Rajapeth Lane 4',
-    date: '13 Oct 2026, 04:06 pm',
-    icon: '💡',
-    status: 'Pending',
-    photo: 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500'
+    status: 'Resolved',
+    assignedOfficer: 'Er. Amit V. Patil',
+    officerRole: 'Junior Engineer (Civil & PWD)',
+    officerPhone: '+91 94228 67123',
+    officerEmail: 'amit.patil@amravatimc.gov.in',
+    squad: 'Ward 1 Rapid Pothole Repair Squad',
+    squadSize: '5 Field Technicians',
+    machinery: 'Hot-Mix Asphalt Compactor & Mini Roller (AMC-R-04)',
+    supervisor: 'Sunil More (Field Supervisor)',
+    photo: 'images/pothole-before.jpg',
+    afterPhoto: 'images/pothole-after.jpg',
+    inspectionRemarks: 'Site inspection conducted by Er. Amit Patil. Asphalt leveling and sub-base compaction completed.',
+    resolutionRemarks: 'Pothole filled and road leveled. Inspected and verified on site by Junior Engineer. Traffic restored.'
   },
   {
     token: '#GRV-2026-000108',
     title: 'Sewer blockage',
     department: 'Sewerage & Drainage Department',
     location: 'Gadge Nagar Main Road',
-    date: '13 Oct 2026, 12:51 pm',
+    date: '21 Oct 2026, 12:51 pm',
     icon: '🌊',
-    status: 'Pending',
-    photo: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=500'
+    status: 'In Progress',
+    assignedOfficer: 'Sanjay Patil',
+    officerRole: 'Senior Sanitary Inspector',
+    officerPhone: '+91 98224 51098',
+    officerEmail: 'sanjay.patil@amravatimc.gov.in',
+    squad: 'Drainage Jetting Unit 2 (Super Sucker)',
+    squadSize: '4 Crew Members',
+    machinery: 'High-Pressure Sewer Jetting Machine (AMC-SJ-02)',
+    supervisor: 'Ganesh Shinde (Sanitation Supervisor)',
+    photo: 'images/sewer-before.jpg',
+    inspectionRemarks: 'Field squad on site. High-pressure jetting unit active in clearing deep chamber blockage.',
+    resolutionRemarks: 'Awaiting final chamber flow verification upon clearance.'
+  },
+  {
+    token: '#GRV-2026-000116',
+    title: 'Light not working',
+    department: 'Street Lighting Department',
+    location: 'Rajapeth Lane 4',
+    date: '19 Oct 2026, 06:15 pm',
+    icon: '💡',
+    status: 'Resolved',
+    assignedOfficer: 'Suresh S. Kale',
+    officerRole: 'Assistant Electrical Engineer',
+    officerPhone: '+91 98901 23456',
+    officerEmail: 'suresh.kale@amravatimc.gov.in',
+    squad: 'Ward 1 Street Lighting Maintenance Unit',
+    squadSize: '3 Electricians',
+    machinery: 'Hydraulic Bucket Truck (AMC-BT-01)',
+    supervisor: 'Prakash Rao (Line Inspector)',
+    photo: 'images/light-before.jpg',
+    afterPhoto: 'images/light-after.jpg',
+    inspectionRemarks: 'LED driver and faulty fuse wire replaced on Pole #42.',
+    resolutionRemarks: 'Street lamp restored and functioning. Verified by Electrical Wing.'
   },
   {
     token: '#GRV-2026-000104',
@@ -64,27 +97,37 @@ const TICKETS_SAMPLE = [
     date: '13 Oct 2026, 10:52 am',
     icon: '💡',
     status: 'Pending',
-    photo: 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500'
+    photo: 'images/light-before.jpg'
   },
   {
     token: '#GRV-2026-000102',
-    title: 'Sewer blockage',
-    department: 'Sewerage & Drainage Department',
-    location: 'Dastur Nagar',
+    title: 'Garbage overflow',
+    department: 'Solid Waste Management',
+    location: 'Dastur Nagar Road',
     date: '12 Oct 2026, 06:17 pm',
-    icon: '🌊',
-    status: 'Pending',
-    photo: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=500'
+    icon: '🗑️',
+    status: 'Resolved',
+    assignedOfficer: 'Ramesh K. Tayade',
+    officerRole: 'Chief Sanitary Inspector',
+    officerPhone: '+91 94231 12345',
+    officerEmail: 'ramesh.tayade@amravatimc.gov.in',
+    squad: 'Ward 2 Solid Waste Mobile Unit',
+    squadSize: '6 Sanitation Workers',
+    machinery: 'Hydraulic Compactor Tipper (AMC-CT-03)',
+    supervisor: 'Vijay Meshram',
+    photo: 'images/pothole-before.jpg',
+    afterPhoto: 'images/pothole-after.jpg',
+    resolutionRemarks: 'Garbage cleared and bleaching powder disinfectant applied.'
   },
   {
     token: '#GRV-2026-000098',
-    title: 'Light not working',
-    department: 'Street Lighting Department',
+    title: 'Potholes on Highway',
+    department: 'Road Maintenance Department',
     location: 'Badnera Road',
     date: '12 Oct 2026, 05:21 pm',
-    icon: '💡',
+    icon: '🛣️',
     status: 'Pending',
-    photo: 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500'
+    photo: 'images/pothole-before.jpg'
   },
   {
     token: '#GRV-2026-000097',
@@ -94,7 +137,7 @@ const TICKETS_SAMPLE = [
     date: '12 Oct 2026, 05:18 pm',
     icon: '🌊',
     status: 'Pending',
-    photo: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=500'
+    photo: 'images/sewer-before.jpg'
   },
   {
     token: '#GRV-2026-000096',
@@ -104,7 +147,7 @@ const TICKETS_SAMPLE = [
     date: '12 Oct 2026, 05:15 pm',
     icon: '🌊',
     status: 'Pending',
-    photo: 'https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=500'
+    photo: 'images/sewer-before.jpg'
   }
 ];
 
@@ -114,6 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setupNavigationTabs();
   setupLanguageSwitcher();
+  setupImageLightbox();
   // Defer map init to next frame to avoid forced synchronous layout / reflow (getSize)
   requestAnimationFrame(() => {
     setupLeafletMap();
@@ -309,11 +353,22 @@ function renderTicketList() {
     token: '#' + (g.grievanceNo || `GRV-2026-${g.id}`),
     title: g.category || 'Grievance',
     department: g.department,
-    location: g.location || 'Amravati',
+    location: g.location || g.landmark || 'Amravati',
     date: g.submittedDate || '21 Oct 2026',
-    icon: (g.category && g.category.includes('Pothole')) ? '🛣️' : ((g.category && g.category.includes('manhole')) ? '🌊' : '💡'),
+    icon: (g.category && g.category.includes('Pothole')) ? '🛣️' : ((g.category && (g.category.includes('manhole') || g.category.includes('Sewer') || g.category.includes('Water'))) ? '🌊' : '💡'),
     status: g.status,
-    photo: (g.images && g.images.before) ? g.images.before : 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=500'
+    photo: (g.images && g.images.before) ? g.images.before : 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=500',
+    afterPhoto: (g.images && g.images.after) ? g.images.after : (g.afterPhoto || null),
+    assignedOfficer: g.assignedOfficer,
+    officerRole: g.officerRole,
+    officerPhone: g.officerPhone,
+    officerEmail: g.officerEmail,
+    squad: g.squad,
+    squadSize: g.squadSize,
+    machinery: g.machinery,
+    supervisor: g.supervisor,
+    inspectionRemarks: g.inspectionRemarks,
+    resolutionRemarks: g.resolutionRemarks
   }));
 
   const combined = [...storedList, ...TICKETS_SAMPLE];
@@ -350,6 +405,8 @@ function renderTicketList() {
 
   container.innerHTML = filtered.map(t => {
     const isSelected = t.token === selectedTicketToken ? 'selected' : '';
+    const isResolved = t.status === 'Resolved';
+    const statusDot = isResolved ? 'style="color: #10b981;"' : (t.status === 'In Progress' ? 'style="color: #0284c7;"' : 'style="color: #f59e0b;"');
     return `
       <div class="ticket-row-tile ${isSelected}" data-token="${t.token}">
         <div class="ticket-tile-top">
@@ -362,7 +419,10 @@ function renderTicketList() {
         <div class="ticket-tile-meta">
           <strong>${t.token}</strong> • ${t.department.slice(0, 20)}...
         </div>
-        <div class="ticket-tile-date">${t.date}</div>
+        <div class="ticket-tile-date" style="display: flex; align-items: center; justify-content: space-between;">
+          <span>${t.date}</span>
+          <span ${statusDot} style="font-weight: 700; font-size: 0.65rem;">● ${t.status}</span>
+        </div>
       </div>
     `;
   }).join('');
@@ -417,28 +477,87 @@ function updateLiveTrackerDetail(item) {
   if (locEl) locEl.textContent = item.location;
   if (dateEl) dateEl.textContent = item.date;
 
-  // Before & After evidence box
-  const imgEl = document.getElementById('detail-before-img');
-  if (imgEl && item.photo) imgEl.src = item.photo;
-
-  const baStatusTitle = document.getElementById('detail-ba-status-title');
-  const baStatusSub = document.getElementById('detail-ba-status-sub');
   const isResolved = item.status === 'Resolved';
   const isInProgress = item.status === 'In Progress';
+
+  // 1. Top status tag pill
+  const topStatusPill = document.getElementById('detail-status-pill-top');
+  if (topStatusPill) {
+    topStatusPill.className = isResolved ? 'status-tag-resolved' : (isInProgress ? 'status-tag-progress' : 'status-tag-pending');
+    topStatusPill.textContent = isResolved ? '● RESOLVED' : (isInProgress ? '● IN PROGRESS' : '● PENDING');
+  }
+
+  // 2. Before & After evidence box
+  const imgEl = document.getElementById('detail-before-img');
+  const noPhotoBox = document.getElementById('detail-no-photo-box');
+  const baRowAfter = document.getElementById('ba-row-after');
+  const baStatusIcon = document.getElementById('detail-ba-status-icon');
+  const baStatusTitle = document.getElementById('detail-ba-status-title');
+  const baStatusSub = document.getElementById('detail-ba-status-sub');
+
+  const beforePhoto = item.photo || (item.images && item.images.before);
+  if (beforePhoto) {
+    if (imgEl) {
+      imgEl.src = beforePhoto;
+      imgEl.style.display = 'block';
+      imgEl.classList.remove('hidden');
+      imgEl.style.cursor = 'pointer';
+      imgEl.title = 'Click to open full photo';
+      imgEl.onclick = () => window.openImageLightbox(beforePhoto, 'BEFORE: Citizen Evidence', item.title);
+    }
+    if (noPhotoBox) {
+      noPhotoBox.style.display = 'none';
+      noPhotoBox.classList.add('hidden');
+    }
+  } else {
+    if (imgEl) {
+      imgEl.style.display = 'none';
+      imgEl.classList.add('hidden');
+    }
+    if (noPhotoBox) {
+      noPhotoBox.style.display = 'flex';
+      noPhotoBox.classList.remove('hidden');
+    }
+  }
+
+  // Handle AFTER photo row ONLY for resolved tickets with valid after photo
+  const resolvedAfter = item.afterPhoto || (item.images && item.images.after);
+  if (isResolved && resolvedAfter) {
+    if (baRowAfter) {
+      baRowAfter.style.display = 'flex';
+      baRowAfter.classList.remove('hidden');
+      baRowAfter.innerHTML = `
+        <span class="ba-label-tag" style="color: #059669;">AFTER:</span>
+        <div class="ba-thumb-container ba-thumb-after" style="cursor: pointer;" onclick="window.openImageLightbox('${resolvedAfter}', 'AFTER: Municipal Resolution Proof', '${item.title}')" title="Click to open full resolution photo">
+          <img id="detail-after-img" src="${resolvedAfter}" alt="After repair" onerror="this.onerror=null; this.src='images/pothole-after.jpg';" />
+          <span class="ba-after-badge"><i class="fa-solid fa-check"></i> Resolved</span>
+        </div>
+      `;
+    }
+  } else {
+    if (baRowAfter) {
+      baRowAfter.style.display = 'none';
+      baRowAfter.classList.add('hidden');
+      baRowAfter.innerHTML = '';
+    }
+  }
 
   if (baStatusTitle && baStatusSub) {
     if (isResolved) {
       baStatusTitle.textContent = 'Resolved';
       baStatusTitle.style.color = '#10b981';
-      baStatusSub.textContent = 'Work verified & closed by AMC';
+      baStatusSub.textContent = item.assignedOfficer ? `Work verified & closed by ${item.assignedOfficer}` : 'Work verified & closed by AMC';
+      if (baStatusIcon) baStatusIcon.textContent = '✓';
     } else if (isInProgress) {
       baStatusTitle.textContent = 'In Progress';
       baStatusTitle.style.color = '#38bdf8';
-      baStatusSub.textContent = 'Field squad deployed on site';
+      baStatusSub.textContent = item.assignedOfficer ? `Assigned to ${item.assignedOfficer} • Field squad on site` : 'Field squad deployed on site';
+      if (baStatusIcon) baStatusIcon.textContent = '⚡';
     } else {
       baStatusTitle.textContent = 'Pending Fix';
       baStatusTitle.style.color = '#f59e0b';
       baStatusSub.textContent = 'Work in progress on site';
+      if (baStatusIcon) baStatusIcon.textContent = '⏰';
     }
   }
 
@@ -452,19 +571,31 @@ function updateLiveTrackerDetail(item) {
   const node2 = document.getElementById('track-node-2');
   const branch2 = document.getElementById('track-branch-2');
   const sub2 = document.getElementById('flow-card-sub-2');
-  if (isResolved || isInProgress) {
+  const status2 = document.getElementById('flow-card-status-2');
+  const icon2 = document.getElementById('flow-card-icon-2');
+
+  const isAssigned = isResolved || isInProgress || (item.assignedOfficer && item.assignedOfficer !== 'Unassigned');
+  if (isAssigned) {
     if (node2) {
       node2.className = 'timeline-spine-node done';
       node2.innerHTML = '<span>✓</span>';
     }
     if (branch2) branch2.className = 'timeline-connector-branch left-branch done';
-    if (sub2) sub2.textContent = `Assigned to ${item.department} Squad.`;
+    const officerName = item.assignedOfficer && item.assignedOfficer !== 'Unassigned' ? item.assignedOfficer : 'Er. Amit V. Patil';
+    const role = item.officerRole || 'Junior Engineer (Civil & PWD)';
+    const squad = item.squad || 'Ward 1 Rapid Squad';
+    const phone = item.officerPhone || '+91 94228 67123';
+    if (status2) status2.textContent = `Assigned: ${officerName}`;
+    if (icon2) icon2.style.color = '#059669';
+    if (sub2) sub2.textContent = `Assigned to ${role} • ${squad} (${phone})`;
   } else {
     if (node2) {
       node2.className = 'timeline-spine-node';
       node2.innerHTML = '<span class="node-inner-dot"></span>';
     }
     if (branch2) branch2.className = 'timeline-connector-branch left-branch';
+    if (status2) status2.textContent = 'Assigned';
+    if (icon2) icon2.style.color = '#2563eb';
     if (sub2) sub2.textContent = 'We will assign an officer soon.';
   }
 
@@ -472,26 +603,35 @@ function updateLiveTrackerDetail(item) {
   const node3 = document.getElementById('track-node-3');
   const branch3 = document.getElementById('track-branch-3');
   const sub3 = document.getElementById('flow-card-sub-3');
+  const status3 = document.getElementById('flow-card-status-3');
+  const icon3 = document.getElementById('flow-card-icon-3');
+
   if (isResolved) {
     if (node3) {
       node3.className = 'timeline-spine-node done';
       node3.innerHTML = '<span>✓</span>';
     }
     if (branch3) branch3.className = 'timeline-connector-branch left-branch done';
-    if (sub3) sub3.textContent = 'Physical repair and asphalt restoration completed on site.';
+    if (status3) status3.textContent = 'Inspection & Work Completed';
+    if (icon3) icon3.style.color = '#059669';
+    if (sub3) sub3.textContent = item.inspectionRemarks || 'Physical repair, leveling, and asphalt restoration completed on site.';
   } else if (isInProgress) {
     if (node3) {
       node3.className = 'timeline-spine-node active';
-      node3.innerHTML = '<span class="node-inner-dot"></span>';
+      node3.innerHTML = '<span>⚡</span>';
     }
     if (branch3) branch3.className = 'timeline-connector-branch left-branch';
-    if (sub3) sub3.textContent = 'Field squad currently on site addressing the reported defect.';
+    if (status3) status3.textContent = 'Under Review & Active Work';
+    if (icon3) icon3.style.color = '#f59e0b';
+    if (sub3) sub3.textContent = item.inspectionRemarks || 'Field squad currently on site addressing the reported defect with required machinery.';
   } else {
     if (node3) {
       node3.className = 'timeline-spine-node';
       node3.innerHTML = '<span class="node-inner-dot"></span>';
     }
     if (branch3) branch3.className = 'timeline-connector-branch left-branch';
+    if (status3) status3.textContent = 'Under Review';
+    if (icon3) icon3.style.color = '#f59e0b';
     if (sub3) sub3.textContent = 'A large and deep pothole has formed on the road surface, which is filled with stagnant water and poses safety risks...';
   }
 
@@ -500,6 +640,9 @@ function updateLiveTrackerDetail(item) {
   const branch4 = document.getElementById('track-branch-4');
   const badge4 = document.getElementById('flow-card-badge-4');
   const sub4 = document.getElementById('flow-card-sub-4');
+  const status4 = document.getElementById('flow-card-status-4');
+  const icon4 = document.getElementById('flow-card-icon-4');
+
   if (isResolved) {
     if (node4) {
       node4.className = 'timeline-spine-node done';
@@ -511,7 +654,9 @@ function updateLiveTrackerDetail(item) {
       badge4.style.background = '#ecfdf5';
       badge4.style.color = '#047857';
     }
-    if (sub4) sub4.textContent = 'Inspected and before/after verification recorded by municipal engineer.';
+    if (status4) status4.textContent = 'Resolved & Verified';
+    if (icon4) icon4.style.color = '#059669';
+    if (sub4) sub4.textContent = item.resolutionRemarks || 'Inspected and before/after verification recorded by municipal engineer. Traffic restored.';
   } else {
     if (node4) {
       node4.className = 'timeline-spine-node';
@@ -523,8 +668,154 @@ function updateLiveTrackerDetail(item) {
       badge4.style.background = '#f1f5f9';
       badge4.style.color = '#475569';
     }
+    if (status4) status4.textContent = 'Resolved';
+    if (icon4) icon4.style.color = '#94a3b8';
     if (sub4) sub4.textContent = 'Officer will share work details and photos.';
   }
+
+  // Keep Officers & Squad view synchronized
+  renderOfficersSquadPanel(item);
+}
+
+// Renders the dedicated Officers & Squad dossier tab
+function renderOfficersSquadPanel(item) {
+  const panel = document.getElementById('officers-squad-view');
+  if (!panel) return;
+
+  const isAssigned = item.assignedOfficer && item.assignedOfficer !== 'Unassigned';
+  const officerName = isAssigned ? item.assignedOfficer : 'Awaiting Officer Assignment';
+  const officerRole = item.officerRole || (item.department ? `${item.department} • Ward 1` : 'Municipal Field Officer');
+  const officerPhone = item.officerPhone || '+91 94228 67123';
+  const officerEmail = item.officerEmail || 'ward1.officer@amravatimc.gov.in';
+  const squadName = item.squad || 'Ward 1 Rapid Municipal Task Squad';
+  const squadSize = item.squadSize || '5 Field Technicians';
+  const machinery = item.machinery || 'Standard Municipal Maintenance Toolkit & Van';
+  const supervisor = item.supervisor || 'Sunil More (Ward Field Supervisor)';
+  const remarks = item.inspectionRemarks || item.resolutionRemarks || 'On-site municipal operations active under AMC SLA.';
+
+  const avatarUrl = isAssigned 
+    ? (item.department && item.department.includes('Road') ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
+       : (item.department && item.department.includes('Light') ? 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80'
+       : 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80'))
+    : null;
+
+  if (!isAssigned) {
+    panel.innerHTML = `
+      <div class="officer-pending-state-card">
+        <div class="pending-icon-circle">🛡️</div>
+        <h4>Officer Assignment In Progress</h4>
+        <p>This grievance has been queued to <strong>${item.department || 'Municipal Corporation'}</strong>. A dedicated Junior Engineer will be dispatched within the SLA window.</p>
+        <div class="officer-sla-pill">⏰ Escalation SLA: Active</div>
+      </div>
+    `;
+    return;
+  }
+
+  panel.innerHTML = `
+    <div class="officer-dossier-card">
+      <div class="officer-profile-header">
+        <div class="officer-avatar-box">
+          <img src="${avatarUrl}" alt="${officerName}" class="officer-avatar-img" />
+          <span class="officer-verified-badge" title="Verified AMC Officer">✓</span>
+        </div>
+        <div class="officer-info-col">
+          <div class="officer-name-row">
+            <h4>${officerName}</h4>
+            <span class="badge-role-tag">${item.status === 'Resolved' ? 'Verified Officer' : 'Assigned JE'}</span>
+          </div>
+          <div class="officer-role-title">${officerRole}</div>
+          <div class="officer-dept-label">Amravati Municipal Corporation</div>
+        </div>
+      </div>
+
+      <div class="officer-actions-row">
+        <a href="tel:${officerPhone.replace(/[^0-9+]/g, '')}" class="btn-officer-action btn-officer-call">
+          <i class="fa-solid fa-phone"></i>
+          <span>Call Officer</span>
+        </a>
+        <a href="mailto:${officerEmail}" class="btn-officer-action btn-officer-email">
+          <i class="fa-solid fa-envelope"></i>
+          <span>Official Mail</span>
+        </a>
+      </div>
+
+      <div class="officer-meta-grid">
+        <div class="officer-meta-item">
+          <span class="meta-label">DISPATCHED SQUAD</span>
+          <span class="meta-value">👷 ${squadName}</span>
+        </div>
+        <div class="officer-meta-item">
+          <span class="meta-label">SQUAD STRENGTH</span>
+          <span class="meta-value">👥 ${squadSize}</span>
+        </div>
+        <div class="officer-meta-item">
+          <span class="meta-label">DEPLOYED MACHINERY</span>
+          <span class="meta-value">🚜 ${machinery}</span>
+        </div>
+        <div class="officer-meta-item">
+          <span class="meta-label">FIELD SUPERVISOR</span>
+          <span class="meta-value">👤 ${supervisor}</span>
+        </div>
+      </div>
+
+      <div class="officer-remarks-card">
+        <div class="remarks-header">
+          <i class="fa-solid fa-clipboard-check" style="color: #059669;"></i>
+          <span>Field Inspection & Status Log</span>
+        </div>
+        <p class="remarks-body">"${remarks}"</p>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================================
+// Lightbox Zoom for Evidence Photos (Click to open big)
+// ============================================================================
+window.openImageLightbox = function(imgSrc, tag, title) {
+  const modal = document.getElementById('image-lightbox-modal');
+  const modalImg = document.getElementById('image-lightbox-img');
+  const badge = document.getElementById('image-lightbox-badge');
+  const titleEl = document.getElementById('image-lightbox-title');
+  const captionEl = document.getElementById('image-lightbox-caption');
+
+  if (!modal || !modalImg) return;
+  modalImg.src = imgSrc;
+  if (badge) {
+    badge.textContent = tag || 'EVIDENCE';
+    badge.style.background = (tag && tag.includes('AFTER')) ? '#059669' : '#0284c7';
+  }
+  if (titleEl) titleEl.textContent = title || 'Grievance Evidence';
+  if (captionEl) {
+    captionEl.textContent = (tag && tag.includes('AFTER'))
+      ? 'Municipal work completed and verified on-site by AMC Field Junior Engineer.'
+      : 'On-site citizen evidence photo submitted for municipal redressal.';
+  }
+
+  modal.style.display = 'flex';
+};
+
+function setupImageLightbox() {
+  const modal = document.getElementById('image-lightbox-modal');
+  const closeBtn = document.getElementById('image-lightbox-close-btn');
+  const dismissBtn = document.getElementById('image-lightbox-dismiss-btn');
+
+  const close = () => {
+    if (modal) modal.style.display = 'none';
+  };
+
+  closeBtn?.addEventListener('click', close);
+  dismissBtn?.addEventListener('click', close);
+
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) close();
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal && modal.style.display !== 'none') {
+      close();
+    }
+  });
 }
 
 function setupTicketFilters() {
@@ -551,6 +842,28 @@ function setupTicketActionButtons() {
   const btnShare = document.getElementById('btn-share-grievance');
   const btnNew = document.getElementById('tickets-new-btn');
   const btnInspect = document.getElementById('track-btn-inspect-evidence');
+
+  // Sub-tabs: Live Timeline vs Officers & Squad
+  const tabTimeline = document.getElementById('sub-tab-timeline');
+  const tabOfficers = document.getElementById('sub-tab-officers');
+  const viewTimeline = document.getElementById('timeline-flow-view');
+  const viewOfficers = document.getElementById('officers-squad-view');
+
+  if (tabTimeline && tabOfficers) {
+    tabTimeline.addEventListener('click', () => {
+      tabTimeline.classList.add('active');
+      tabOfficers.classList.remove('active');
+      if (viewTimeline) viewTimeline.style.display = 'block';
+      if (viewOfficers) viewOfficers.style.display = 'none';
+    });
+
+    tabOfficers.addEventListener('click', () => {
+      tabOfficers.classList.add('active');
+      tabTimeline.classList.remove('active');
+      if (viewTimeline) viewTimeline.style.display = 'none';
+      if (viewOfficers) viewOfficers.style.display = 'block';
+    });
+  }
 
   if (btnInspect) {
     btnInspect.addEventListener('click', (e) => {
@@ -797,6 +1110,13 @@ function setupLeafletMap() {
     });
     L.marker([c.lat, c.lng], { icon: pill, alt: `${c.ward} active complaints` }).addTo(leafletMap);
   });
+
+  // Prevent map drag and clicks from hijacking horizontal swipe on bottom cards
+  const bottomCardsEl = document.getElementById('map-bottom-cards');
+  if (bottomCardsEl && typeof L !== 'undefined') {
+    L.DomEvent.disableClickPropagation(bottomCardsEl);
+    L.DomEvent.disableScrollPropagation(bottomCardsEl);
+  }
 }
 
 function renderKpiCards() {
@@ -811,56 +1131,94 @@ function renderBottomCards() {
   const container = document.getElementById('map-bottom-cards');
   if (!container) return;
 
-  const displayList = allGrievances.length > 0 ? allGrievances.slice(0, 4) : Store.getAll().slice(0, 4);
+  // Curated showcase cards demonstrating realistic civic issues with before & after photos
+  const showcaseList = [
+    {
+      id: 175,
+      grievanceNo: 'GRV-2026-000175',
+      title: 'Pothole & Road Repair',
+      ward: 'Ward 1 - Camp',
+      location: 'Camp Main Road, Opp District Court',
+      status: 'Resolved',
+      images: {
+        before: 'images/pothole-before.jpg',
+        after: 'images/pothole-after.jpg'
+      }
+    },
+    {
+      id: 202,
+      grievanceNo: 'GRV-2026-000202',
+      title: 'Street Waterlogging',
+      ward: 'Ward 1 - Camp',
+      location: 'Camp Main Road, Near Bus Stand',
+      status: 'In Progress',
+      images: {
+        before: 'images/water-before.jpg',
+        after: null
+      }
+    },
+    {
+      id: 116,
+      grievanceNo: 'GRV-2026-000116',
+      title: 'Street Light Restored',
+      ward: 'Ward 2 - Rajapeth',
+      location: 'Rajapeth Lane 4, Pillar #12',
+      status: 'Resolved',
+      images: {
+        before: 'images/light-before.jpg',
+        after: 'images/light-after.jpg'
+      }
+    },
+    {
+      id: 108,
+      grievanceNo: 'GRV-2026-000108',
+      title: 'Sewer Chamber Jetting',
+      ward: 'Ward 3 - Gadge Nagar',
+      location: 'Gadge Nagar Main Road',
+      status: 'In Progress',
+      images: {
+        before: 'images/sewer-before.jpg',
+        after: null
+      }
+    }
+  ];
 
-  container.innerHTML = displayList.map((g, idx) => {
-    const gid = g.id || g.trackingId || g.grievanceNo;
+  container.innerHTML = showcaseList.map((g) => {
+    const gid = g.grievanceNo || `GRV-2026-${g.id}`;
     const isResolved = g.status === 'Resolved';
     const isInProgress = g.status === 'In Progress';
     const statusStyle = isResolved ? 'background: #dcfce7; color: #15803d; border: 1px solid #86efac;' : 
-                        (isInProgress ? 'background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc;' : '');
-    const beforeImg = (g.images && g.images.before) ? g.images.before : 'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500';
-    const afterImg = (g.images && g.images.after) ? g.images.after : null;
-    const votes = currentDossierVotes[gid] || 0;
-    
-    // Exact Image 2 metadata mapping
-    const wardText = idx === 0 ? 'Ward 1' : (idx === 1 ? 'Ward A1' : (g.ward || 'Ward 1'));
-    const titleText = idx === 0 ? 'Waterlogging' : (idx === 1 ? 'Light not working' : (g.title || g.category || 'Civic Issue'));
-    const locText = idx === 0 ? 'rger5656' : (idx === 1 ? 'hdgffghy' : (g.landmark || g.location || 'main road, Amravati'));
+                        (isInProgress ? 'background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc;' : 'background: #fef3c7; color: #b45309; border: 1px solid #fcd34d;');
+    const beforeImg = g.images.before;
+    const afterImg = g.images.after;
+    const votes = currentDossierVotes[gid] || (isResolved ? 18 : 6);
 
     return `
       <div class="complaint-card-tile" onclick="window.openCitizenDossier('${gid}')" style="cursor: pointer;" title="Click to view full dossier">
         <div class="card-tile-header">
-          <span class="ward-tag">📍 ${wardText}</span>
+          <span class="ward-tag">📍 ${g.ward}</span>
           <span class="status-tag-pending" style="${statusStyle}">${g.status || 'Pending'}</span>
         </div>
         <div class="card-tile-body">
-          <h4>${titleText}</h4>
-          <div class="card-tile-location">${locText}</div>
+          <h4>${g.title}</h4>
+          <div class="card-tile-location">${g.location}</div>
         </div>
-        ${idx === 0 ? `
-          <div class="no-photo-evidence-box">
-            <i class="fa-regular fa-image" style="font-size: 1.5rem; color: #94a3b8;"></i>
-            <span style="font-size: 0.75rem; color: #64748b; font-weight: 600;">No photo evidence attached</span>
+        <div class="card-split-image-box">
+          <div class="split-side">
+            <span class="split-pill-badge pill-before">Before</span>
+            <img src="${beforeImg}" alt="Before repair" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=500';" />
           </div>
-        ` : `
-          <div class="card-split-image-box">
-            <div class="split-side">
-              <span class="split-pill-badge pill-before">Before</span>
-              <img src="${beforeImg}" alt="Before" />
-            </div>
-            <div class="split-center-divider"></div>
-            <div class="split-side" style="background: #0f172a; position: relative; overflow: hidden;">
-              ${afterImg ? `
-                <span class="split-pill-badge" style="position: absolute; top: 6px; right: 6px; background: rgba(16, 185, 129, 0.9); color: #ffffff; font-size: 9px; font-weight: 800; padding: 1px 6px; border-radius: 9999px; z-index: 2;">After</span>
-                <img src="${afterImg}" alt="After" style="width: 100%; height: 100%; object-fit: cover;" />
-              ` : `
-                <span class="split-pill-badge pill-pending-fix">Pending Fix</span>
-                <div class="pending-fix-placeholder">In Progress<br/>Fix will appear once resolved</div>
-              `}
-            </div>
+          <div class="split-center-divider"></div>
+          <div class="split-side" style="background: #0f172a; position: relative; overflow: hidden;">
+            ${afterImg ? `
+              <span class="split-pill-badge" style="position: absolute; top: 6px; right: 6px; background: rgba(16, 185, 129, 0.95); color: #ffffff; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 9999px; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.25);">✓ After</span>
+              <img src="${afterImg}" alt="After repair" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1584463699047-9759d57a4103?w=500';" />
+            ` : `
+              <span class="split-pill-badge pill-pending-fix">Pending Fix</span>
+              <div class="pending-fix-placeholder">In Progress<br/>Fix will appear once resolved</div>
+            `}
           </div>
-        `}
+        </div>
         <div class="card-tile-footer">
           <button type="button" class="btn-vote" onclick="event.stopPropagation(); window.voteCitizenCard('${gid}', this)">✓ ${votes} Votes</button>
           <button type="button" class="btn-tile-details" onclick="event.stopPropagation(); window.openCitizenDossier('${gid}')">Details →</button>

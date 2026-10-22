@@ -184,7 +184,7 @@ export const SEED_COMPLAINTS = [
     assignedOfficer: 'Unassigned',
     isNew: true,
     images: {
-      before: '',
+      before: 'images/water-before.jpg',
       after: ''
     },
     timeline: [
@@ -192,6 +192,116 @@ export const SEED_COMPLAINTS = [
       { step: 2, title: '2. Field Unit Assigned', subtitle: 'Unassigned • Awaiting Officer Assignment', status: 'pending', current: false },
       { step: 3, title: '3. Under Review & Inspection', subtitle: 'There is severe waterlogging on the road, causing...', status: 'pending', current: false },
       { step: 4, title: '4. Resolved & Closed', subtitle: 'Officer will share work details and photos.', status: 'pending', current: false }
+    ]
+  },
+  {
+    id: 175,
+    grievanceNo: 'GRV-2026-000175',
+    trackingId: 'GRV-2026-000175',
+    citizen: 'Pooja Sharma',
+    mobile: '9822334455',
+    department: 'Road Maintenance Department',
+    category: 'Potholes',
+    location: 'Camp Main Road, Amravati',
+    landmark: 'Opposite District Court Complex',
+    status: 'Resolved',
+    priority: 'HIGH',
+    submittedDate: '17 Oct 2026, 02:33 pm',
+    resolvedDate: '18 Oct 2026, 11:20 am',
+    slaRemaining: 'Resolved within 24h SLA',
+    assignedOfficer: 'Er. Amit V. Patil',
+    officerRole: 'Junior Engineer (Civil & PWD)',
+    officerPhone: '+91 94228 67123',
+    officerEmail: 'amit.patil@amravatimc.gov.in',
+    squad: 'Ward 1 Rapid Pothole Repair Squad',
+    squadSize: '5 Field Technicians',
+    machinery: 'Hot-mix Asphalt Compactor & Roller (AMC-R-04)',
+    supervisor: 'Sunil More (Field Supervisor)',
+    isNew: false,
+    images: {
+      before: 'images/pothole-before.jpg',
+      after: 'images/pothole-after.jpg'
+    },
+    inspectionRemarks: 'Site inspection conducted by Er. Amit Patil. Asphalt leveling and sub-base compaction completed.',
+    resolutionRemarks: 'Pothole filled and road leveled. Inspected and verified on site by Junior Engineer. Traffic restored.',
+    timeline: [
+      { step: 1, title: '1. Grievance Submitted', subtitle: 'Pooja Sharma • 02:33 PM', status: 'done', current: false },
+      { step: 2, title: '2. Field Unit Assigned', subtitle: 'Er. Amit V. Patil (JE, PWD) • Ward 1 Squad', status: 'done', current: false },
+      { step: 3, title: '3. Under Review & Inspection', subtitle: 'Site repaired with hot-mix asphalt compaction', status: 'done', current: false },
+      { step: 4, title: '4. Resolved & Closed', subtitle: 'Verified & closed by Junior Engineer Amit Patil', status: 'done', current: true }
+    ]
+  },
+  {
+    id: 108,
+    grievanceNo: 'GRV-2026-000108',
+    trackingId: 'GRV-2026-000108',
+    citizen: 'Rahul Deshmukh',
+    mobile: '9763709303',
+    department: 'Sewerage & Drainage Department',
+    category: 'Sewer blockage',
+    location: 'Gadge Nagar Main Road',
+    landmark: 'Near Gadge Maharaj Mandir',
+    status: 'In Progress',
+    priority: 'CRITICAL',
+    submittedDate: '21 Oct 2026, 12:51 pm',
+    slaRemaining: '18h remaining',
+    assignedOfficer: 'Sanjay Patil',
+    officerRole: 'Senior Sanitary Inspector',
+    officerPhone: '+91 98224 51098',
+    officerEmail: 'sanjay.patil@amravatimc.gov.in',
+    squad: 'Drainage Jetting Unit 2 (Super Sucker)',
+    squadSize: '4 Crew Members',
+    machinery: 'High-Pressure Sewer Jetting Machine (AMC-SJ-02)',
+    supervisor: 'Ganesh Shinde (Sanitation Supervisor)',
+    isNew: false,
+    images: {
+      before: 'images/sewer-before.jpg',
+      after: ''
+    },
+    inspectionRemarks: 'Field squad on site. High-pressure jetting unit active in clearing deep chamber blockage.',
+    resolutionRemarks: 'Awaiting final chamber flow verification upon clearance.',
+    timeline: [
+      { step: 1, title: '1. Grievance Submitted', subtitle: 'Rahul Deshmukh • 12:51 PM', status: 'done', current: false },
+      { step: 2, title: '2. Field Unit Assigned', subtitle: 'Assigned to Sanjay Patil • Drainage Unit', status: 'done', current: false },
+      { step: 3, title: '3. Under Review & Inspection', subtitle: 'High-pressure jetting machine deployed on site', status: 'done', current: true },
+      { step: 4, title: '4. Resolved & Closed', subtitle: 'Awaiting completion and photo validation', status: 'pending', current: false }
+    ]
+  },
+  {
+    id: 116,
+    grievanceNo: 'GRV-2026-000116',
+    trackingId: 'GRV-2026-000116',
+    citizen: 'Kavita Joshi',
+    mobile: '9890123456',
+    department: 'Street Lighting Department',
+    category: 'Light not working',
+    location: 'Rajapeth Lane 4',
+    landmark: 'Near Rajapeth Flyover Pillar 12',
+    status: 'Resolved',
+    priority: 'MEDIUM',
+    submittedDate: '19 Oct 2026, 06:15 pm',
+    resolvedDate: '20 Oct 2026, 11:30 am',
+    slaRemaining: 'Resolved within 24h SLA',
+    assignedOfficer: 'Suresh S. Kale',
+    officerRole: 'Assistant Electrical Engineer',
+    officerPhone: '+91 98901 23456',
+    officerEmail: 'suresh.kale@amravatimc.gov.in',
+    squad: 'Ward 1 Street Lighting Maintenance Unit',
+    squadSize: '3 Electricians',
+    machinery: 'Hydraulic Bucket Truck (AMC-BT-01)',
+    supervisor: 'Prakash Rao (Line Inspector)',
+    isNew: false,
+    images: {
+      before: 'images/light-before.jpg',
+      after: 'images/light-after.jpg'
+    },
+    inspectionRemarks: 'LED driver and faulty fuse wire replaced on Pole #42.',
+    resolutionRemarks: 'Street lamp restored and functioning. Verified by Electrical Wing.',
+    timeline: [
+      { step: 1, title: '1. Grievance Submitted', subtitle: 'Kavita Joshi • 06:15 PM', status: 'done', current: false },
+      { step: 2, title: '2. Field Unit Assigned', subtitle: 'Assigned to Suresh S. Kale (AEE, Electrical)', status: 'done', current: false },
+      { step: 3, title: '3. Under Review & Inspection', subtitle: 'Bucket truck deployed; faulty LED driver replaced', status: 'done', current: false },
+      { step: 4, title: '4. Resolved & Closed', subtitle: 'Light verified operational at night inspection', status: 'done', current: true }
     ]
   },
   {
@@ -414,11 +524,38 @@ export const Store = {
       if (!existing) {
         localStorage.setItem(COMPLAINTS_KEY, JSON.stringify(SEED_COMPLAINTS));
       } else {
-        const parsed = JSON.parse(existing);
-        // Ensure GRV-2026-000202 (Waterlogging) matching reference image is present at the top
-        if (!Array.isArray(parsed) || !parsed.some(c => c.grievanceNo === 'GRV-2026-000202')) {
-          const updated = [SEED_COMPLAINTS[0], ...(Array.isArray(parsed) ? parsed : [])];
-          localStorage.setItem(COMPLAINTS_KEY, JSON.stringify(updated));
+        let parsed = JSON.parse(existing);
+        if (!Array.isArray(parsed)) parsed = [];
+        let updated = false;
+
+        // Ensure key showcase complaints are in store with realistic officer flows and images
+        SEED_COMPLAINTS.slice(0, 4).forEach(sc => {
+          const idx = parsed.findIndex(c => c.grievanceNo === sc.grievanceNo);
+          if (idx === -1) {
+            parsed.unshift(sc);
+            updated = true;
+          } else {
+            parsed[idx] = {
+              ...parsed[idx],
+              status: sc.status,
+              assignedOfficer: sc.assignedOfficer,
+              officerRole: sc.officerRole,
+              officerPhone: sc.officerPhone,
+              officerEmail: sc.officerEmail,
+              squad: sc.squad,
+              squadSize: sc.squadSize,
+              machinery: sc.machinery,
+              supervisor: sc.supervisor,
+              images: sc.images,
+              inspectionRemarks: sc.inspectionRemarks,
+              resolutionRemarks: sc.resolutionRemarks
+            };
+            updated = true;
+          }
+        });
+
+        if (updated) {
+          localStorage.setItem(COMPLAINTS_KEY, JSON.stringify(parsed));
         }
       }
       if (!localStorage.getItem(DEPTS_KEY)) {
