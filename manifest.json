@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
-  "id": "/amc-grievance-v1",
+  "id": "./",
   "name": "Amravati Municipal Grievance Flow",
   "short_name": "AMC Grievance",
   "description": "Official Amravati Municipal Corporation Civic Grievance Redressal and Public Tracking Portal.",
