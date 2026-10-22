@@ -4,7 +4,7 @@
  * Provides offline resilience, shell caching, and instant launch on mobile devices.
  */
 
-const CACHE_NAME = 'amc-grievance-pwa-v2';
+const CACHE_NAME = 'amc-grievance-pwa-v3';
 
 const SHELL_ASSETS = [
   './',

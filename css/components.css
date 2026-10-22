@@ -4505,22 +4505,25 @@
 
 /* PWA Install Shelf / Banner */
 .pwa-install-shelf {
-  position: fixed;
-  bottom: 74px;
-  left: 50%;
-  transform: translateX(-50%) translateY(120%);
-  width: calc(100% - 24px);
-  max-width: 440px;
-  z-index: 100010;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
-  opacity: 0;
-  pointer-events: none;
+  position: fixed !important;
+  bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 8px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) translateY(120%) !important;
+  width: calc(100% - 24px) !important;
+  max-width: 440px !important;
+  z-index: 100010 !important;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, visibility 0.35s ease !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  contain: layout style !important;
 }
 
 .pwa-install-shelf.visible {
-  transform: translateX(-50%) translateY(0);
-  opacity: 1;
-  pointer-events: auto;
+  transform: translateX(-50%) translateY(0) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 .pwa-install-card {
@@ -4837,17 +4840,27 @@
    ========================================================================== */
 @media (max-width: 768px) {
 
-  /* Lock viewport so html & body never scroll or push bottom nav off-screen */
-  html, body {
+  /* Prevent body scrolling — overflow:hidden on BOTH html and body
+     is the cross-browser-safe way. overscroll-behavior: none stops bounce. */
+  html {
+    height: 100% !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+  }
+
+  body {
     height: 100% !important;
     height: 100dvh !important;
     max-height: 100dvh !important;
     overflow: hidden !important;
-    position: fixed !important;
-    inset: 0 !important;
+    overscroll-behavior: none !important;
+    display: flex !important;
+    flex-direction: column !important;
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    position: relative !important;
   }
 
   /* Mobile Bottom Navigation Bar -> Fixed cleanly at bottom of screen */
@@ -4868,8 +4881,10 @@
     box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08) !important;
   }
 
+  /* flex: 1 1 0% fills remaining space after header; explicit calc adds
+     a 60px deduction so content clears the fixed bottom-nav. */
   .dashboard-layout {
-    flex: 1 !important;
+    flex: 1 1 0% !important;
     height: calc(100dvh - 58px - 60px) !important;
     max-height: calc(100dvh - 58px - 60px) !important;
     min-height: 0 !important;

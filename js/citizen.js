@@ -114,7 +114,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setupNavigationTabs();
   setupLanguageSwitcher();
-  setupLeafletMap();
+  // Defer map init to next frame to avoid forced synchronous layout / reflow (getSize)
+  requestAnimationFrame(() => {
+    setupLeafletMap();
+  });
   setupTicketFilters();
   setupReportWizardModal();
   setupTicketActionButtons();
@@ -765,19 +768,19 @@ function setupLeafletMap() {
   // Image 2 Map Markers: Green Checkmark Circle & Dark Ward Pill
   const checkmarkIcon = L.divIcon({
     className: 'custom-check-marker',
-    html: `<div class="map-check-circle"><i class="fa-solid fa-check"></i></div>`,
+    html: `<div class="map-check-circle" role="img" aria-label="Resolved complaint marker"><i class="fa-solid fa-check"></i></div>`,
     iconSize: [36, 36],
     iconAnchor: [18, 18]
   });
-  L.marker([20.9380, 77.7720], { icon: checkmarkIcon }).addTo(leafletMap);
+  L.marker([20.9380, 77.7720], { icon: checkmarkIcon, alt: 'Resolved complaint marker' }).addTo(leafletMap);
 
   const wardDarkIcon = L.divIcon({
     className: 'custom-ward-dark-marker',
-    html: `<div class="map-dark-ward-pill"><span class="dot-green"></span> 📍 Ward 1: Ward 1</div>`,
+    html: `<div class="map-dark-ward-pill" role="img" aria-label="Ward 1 active marker"><span class="dot-green"></span> 📍 Ward 1: Ward 1</div>`,
     iconSize: [140, 28],
     iconAnchor: [70, 14]
   });
-  L.marker([20.9230, 77.7460], { icon: wardDarkIcon }).addTo(leafletMap);
+  L.marker([20.9230, 77.7460], { icon: wardDarkIcon, alt: 'Ward 1 active marker' }).addTo(leafletMap);
 
   // Sample markers
   const sampleCoords = [
@@ -789,10 +792,10 @@ function setupLeafletMap() {
   sampleCoords.forEach(c => {
     const pill = L.divIcon({
       className: 'custom-leaflet-marker',
-      html: `<div class="custom-map-pill">${c.ward}: Active</div>`,
+      html: `<div class="custom-map-pill" role="img" aria-label="${c.ward} active complaints">${c.ward}: Active</div>`,
       iconSize: [120, 26]
     });
-    L.marker([c.lat, c.lng], { icon: pill }).addTo(leafletMap);
+    L.marker([c.lat, c.lng], { icon: pill, alt: `${c.ward} active complaints` }).addTo(leafletMap);
   });
 }
 
