@@ -773,6 +773,7 @@ function renderOfficersSquadPanel(item) {
 // Lightbox Zoom for Evidence Photos (Click to open big)
 // ============================================================================
 window.openImageLightbox = function(imgSrc, tag, title) {
+  if (!imgSrc) return;
   const modal = document.getElementById('image-lightbox-modal');
   const modalImg = document.getElementById('image-lightbox-img');
   const badge = document.getElementById('image-lightbox-badge');
@@ -792,6 +793,7 @@ window.openImageLightbox = function(imgSrc, tag, title) {
       : 'On-site citizen evidence photo submitted for municipal redressal.';
   }
 
+  modal.classList.add('active');
   modal.style.display = 'flex';
 };
 
@@ -801,7 +803,11 @@ function setupImageLightbox() {
   const dismissBtn = document.getElementById('image-lightbox-dismiss-btn');
 
   const close = () => {
-    if (modal) modal.style.display = 'none';
+    if (modal) {
+      modal.classList.remove('active');
+      modal.classList.remove('open');
+      modal.style.display = 'none';
+    }
   };
 
   closeBtn?.addEventListener('click', close);
@@ -812,7 +818,7 @@ function setupImageLightbox() {
   });
 
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal && modal.style.display !== 'none') {
+    if (e.key === 'Escape' && modal && (modal.classList.contains('active') || modal.style.display !== 'none')) {
       close();
     }
   });

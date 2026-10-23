@@ -6295,17 +6295,22 @@
    Image Lightbox Modal (Click thumbnail to open big)
    ========================================================================== */
 .image-lightbox-backdrop {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 99999 !important;
-  background: rgba(15, 23, 42, 0.88) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.image-lightbox-backdrop.active,
+.image-lightbox-backdrop.open {
   display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 1rem !important;
-  animation: lbFadeIn 0.2s ease-out !important;
+  animation: lbFadeIn 0.2s ease-out;
 }
 
 .image-lightbox-card {
